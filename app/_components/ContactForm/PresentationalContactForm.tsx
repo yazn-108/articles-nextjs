@@ -46,7 +46,7 @@ const PresentationalContactForm: React.FC<PresentationalContactFormProps> = ({
         type="submit"
         className="w-full transition-all cursor-pointer py-4 font-semibold rounded-md focus:outline-none px-7 bg-foreground hover:bg-foreground/35 hover:text-foreground text-black"
       >
-        {isPending ? "ارسل الرسالة" : "جاري الارسال..."}
+        {!isPending ? "ارسل الرسالة" : "جاري الارسال..."}
       </button>
       <Toaster position="bottom-right" />
     </form>
