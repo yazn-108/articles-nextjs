@@ -1,0 +1,27 @@
+@import "tailwindcss";
+@custom-variant hover (&:hover);
+:root {
+  --primary: #34a1e7;
+  --secondary: #d1d5dc;
+  --background: #101828;
+  --foreground: white;
+  --dir: rtl;
+}
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+}
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Playpen Sans Arabic", cursive;
+  direction: var(--dir);
+}
+::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+[data-sonner-toaster="true"] {
+  @apply !right-[-12px]  min-[600px]:!right-[24px];
+}
