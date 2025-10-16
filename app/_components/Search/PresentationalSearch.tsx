@@ -1,21 +1,15 @@
+import { PresentationalSearchProps } from "@/types/Search";
 import Link from "next/link";
 import React from "react";
-type Article = {
-  title: string;
-  slug: string;
-};
-interface PresentationalPresentationalSearchProps {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  Open: boolean;
-  containerRef: React.RefObject<HTMLDivElement | null>;
-  inputRef: React.RefObject<HTMLInputElement | null>;
-  query: string;
-  setQuery: React.Dispatch<React.SetStateAction<string>>;
-  data: { articles: Article[] } | undefined;
-}
-const PresentationalSearch: React.FC<
-  PresentationalPresentationalSearchProps
-> = ({ setOpen, Open, containerRef, inputRef, query, setQuery, data }) => {
+const PresentationalSearch: React.FC<PresentationalSearchProps> = ({
+  setOpen,
+  Open,
+  containerRef,
+  inputRef,
+  query,
+  setQuery,
+  data,
+}) => {
   return (
     <>
       <button
@@ -54,7 +48,7 @@ const PresentationalSearch: React.FC<
             />
             <ul className="space-y-1 overflow-y-auto max-h-52 bg-gray-800 rounded">
               {data?.articles.length ? (
-                data.articles.map((article: Article) => (
+                data.articles.map((article) => (
                   <li onClick={() => setOpen(false)} key={article.slug}>
                     <Link
                       href={`/article/${article.slug}`}

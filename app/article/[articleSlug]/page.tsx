@@ -1,44 +1,17 @@
 "use client";
 import GoBackToHome from "@/app/_components/GoBackToHome";
+import { ArticleDetailsResponse } from "@/types/ArticleDetails";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import React, { use, useEffect, useState } from "react";
-interface ImageType {
-  url: string;
-  alt: string;
-}
-interface CodeBlock {
-  language?: string;
-  content?: string;
-}
-interface Block {
-  id: string;
-  title: string | null;
-  content?: string | null;
-  code?: CodeBlock | null;
-  image?: ImageType | null;
-  link: {
-    url: string;
-    title: string;
-  };
-}
-export interface ArticleTY {
-  title: string;
-  slug: string;
-  tag: string;
-  description: string;
-  createdAt: Date;
-  banner: ImageType;
-  blocks: Block[];
-}
 const Page = ({ params }: { params: Promise<{ articleSlug: string }> }) => {
   const { articleSlug } = use(params);
   const [formattedCodeBlocks, setFormattedCodeBlocks] = useState<
     Record<string, string>
   >({});
-  const { data: article, isLoading } = useQuery<ArticleTY>({
+  const { data: article, isLoading } = useQuery<ArticleDetailsResponse>({
     queryKey: [articleSlug],
     queryFn: () =>
       axios.get(`/api/articles/${articleSlug}`).then((res) => res.data),

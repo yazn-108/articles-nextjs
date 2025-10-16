@@ -1,15 +1,8 @@
+import { PresentationalHomePageArticlesProps } from "@/types/HomePageArticles";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { ArticleTY } from "./Articles";
-interface PresentationalArticlesProps {
-  isError: boolean;
-  isLoading: boolean;
-  articles: ArticleTY[];
-  hasNextPage: boolean;
-  inViewRef: (node?: Element | null | undefined) => void;
-}
-const PresentationalArticles: React.FC<PresentationalArticlesProps> = ({
+const PresentationalArticles: React.FC<PresentationalHomePageArticlesProps> = ({
   isError,
   isLoading,
   articles,
@@ -66,7 +59,7 @@ const PresentationalArticles: React.FC<PresentationalArticlesProps> = ({
         </section>
       )}
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-0 py-5 sm:p-5 gap-x-10 gap-y-16">
-        {articles.map((article: ArticleTY, i: number) => (
+        {articles.map((article, i: number) => (
           <div key={article._id} className="space-y-4">
             <Link href={`/article/${article.slug}`} className="block">
               <Image
