@@ -10,12 +10,7 @@ const PresentationalArticles: React.FC<PresentationalHomePageArticlesProps> = ({
   inViewRef,
 }) => {
   return (
-    <div className="p-5 space-y-4">
-      <h1 className="text-3xl md:text-4xl text-center font-bold">مُركَّز</h1>
-      <p className="text-center text-xl md:text-2xl text-secondary max-w-4xl m-auto">
-        مُركَّز منصة اجمع فيها مقالاتي التي تكون عبارة عن ملخص لمعلومة برمجية
-        بدون كثرة مقدمات او تمطيط للكلام....
-      </p>
+    <>
       {isLoading && (
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-0 py-5 sm:p-5 gap-x-10 gap-y-16">
           {[...Array(6)].map((_, index) => (
@@ -108,7 +103,7 @@ const PresentationalArticles: React.FC<PresentationalHomePageArticlesProps> = ({
           )} */}
         </div>
       )}
-    </div>
+    </>
   );
 };
 export default PresentationalArticles;
