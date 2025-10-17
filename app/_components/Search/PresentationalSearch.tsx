@@ -1,6 +1,7 @@
 import { PresentationalSearchProps } from "@/types/Search";
 import Link from "next/link";
 import React from "react";
+import { createPortal } from "react-dom";
 const PresentationalSearch: React.FC<PresentationalSearchProps> = ({
   setOpen,
   Open,
@@ -32,41 +33,43 @@ const PresentationalSearch: React.FC<PresentationalSearchProps> = ({
           />
         </svg>
       </button>
-      {Open && (
-        <div className="absolute backdrop-blur-xl w-full h-dvh left-0 top-0 z-50 p-5 flex justify-center items-start">
-          <div
-            ref={containerRef}
-            className="w-full md:w-[60%] mx-auto space-y-5 p-5 rounded bg-gray-900"
-          >
-            <input
-              ref={inputRef}
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="w-full border-2 border-primary h-10 rounded outline-0 bg-gray-800 py-2 px-5"
-              placeholder="ابحث بين المقالات"
-            />
-            <ul className="space-y-1 overflow-y-auto max-h-52 bg-gray-800 rounded">
-              {data?.articles.length ? (
-                data.articles.map((article) => (
-                  <li onClick={() => setOpen(false)} key={article.slug}>
-                    <Link
-                      href={`/article/${article.slug}`}
-                      className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-all"
-                    >
-                      {article.title}
-                    </Link>
+      {Open &&
+        createPortal(
+          <div className="fixed backdrop-blur-xl w-full h-dvh left-0 top-0 z-50 p-5 flex justify-center items-start">
+            <div
+              ref={containerRef}
+              className="w-full md:w-[60%] mx-auto space-y-5 p-5 rounded bg-gray-900"
+            >
+              <input
+                ref={inputRef}
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="w-full border-2 border-primary h-10 rounded outline-0 bg-gray-800 py-2 px-5"
+                placeholder="ابحث بين المقالات"
+              />
+              <ul className="space-y-1 overflow-y-auto max-h-52 bg-gray-800 rounded">
+                {data?.articles.length ? (
+                  data.articles.map((article) => (
+                    <li onClick={() => setOpen(false)} key={article.slug}>
+                      <Link
+                        href={`/article/${article.slug}`}
+                        className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-all"
+                      >
+                        {article.title}
+                      </Link>
+                    </li>
+                  ))
+                ) : query ? (
+                  <li className="px-4 py-2 text-sm text-gray-500">
+                    لا توجد نتائج
                   </li>
-                ))
-              ) : query ? (
-                <li className="px-4 py-2 text-sm text-gray-500">
-                  لا توجد نتائج
-                </li>
-              ) : null}
-            </ul>
-          </div>
-        </div>
-      )}
+                ) : null}
+              </ul>
+            </div>
+          </div>,
+          document.body
+        )}
     </>
   );
 };
