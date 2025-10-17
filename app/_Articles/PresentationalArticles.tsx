@@ -1,7 +1,14 @@
 import { PresentationalHomePageArticlesProps } from "@/types/HomePageArticles";
-import Image from "next/image";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import React from "react";
+import ArticlesState from "./_components/ArticlesState";
+const ArticleImage = dynamic(() => import("./_components/ArticleImage"), {
+  ssr: false,
+  loading: () => (
+    <div className=" w-full h-[300px] rounded-2xl aspect-[16/9] bg-gray-600 animate-pulse" />
+  ),
+});
 const PresentationalArticles: React.FC<PresentationalHomePageArticlesProps> = ({
   isError,
   isLoading,
@@ -12,62 +19,25 @@ const PresentationalArticles: React.FC<PresentationalHomePageArticlesProps> = ({
   return (
     <>
       {isLoading && (
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-0 py-5 sm:p-5 gap-x-10 gap-y-16">
-          {[...Array(6)].map((_, index) => (
-            <div
-              key={index}
-              className={`space-y-4 animate-pulse ${
-                index > 2
-                  ? "hidden lg:block"
-                  : index > 0
-                  ? "hidden md:block"
-                  : ""
-              }`}
-            >
-              <div className="bg-gray-700 rounded-2xl w-full h-[300px] aspect-[16/9]"></div>
-              <div className="flex justify-center items-center gap-5">
-                <div className="bg-gray-600 h-4 w-20 rounded"></div>
-                <div className="bg-gray-600 h-6 w-16 rounded-full"></div>
-              </div>
-              <div>
-                <div className="bg-gray-600 h-6 w-3/4 mb-2 rounded"></div>
-                <div className="bg-gray-600 h-4 w-full mb-1 rounded"></div>
-                <div className="bg-gray-600 h-4 w-5/6 mb-1 rounded"></div>
-                <div className="bg-gray-600 h-4 w-2/3 rounded"></div>
-              </div>
-            </div>
-          ))}
-        </section>
+        <ArticlesState>
+          <ArticlesState.loading />
+        </ArticlesState>
       )}
       {isError && (
-        <div className="p-5 space-y-4">
-          <div className="min-h-[50dvh] flex justify-center items-center">
-            <h2 className="text-xl text-destructive">
-              حدث خطأ في تحميل المقالات
-            </h2>
-          </div>
-        </div>
+        <ArticlesState>
+          <ArticlesState.error />
+        </ArticlesState>
       )}
       {articles.length === 0 && !isLoading && (
-        <section className="min-h-[50dvh] flex justify-center items-center">
-          <h2 className="text-xl">لا يوجد مقالات بعد...</h2>
-        </section>
+        <ArticlesState>
+          <ArticlesState.empty />
+        </ArticlesState>
       )}
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-0 py-5 sm:p-5 gap-x-10 gap-y-16">
         {articles.map((article, i: number) => (
           <div key={article._id} className="space-y-4">
             <Link href={`/article/${article.slug}`} className="block">
-              <Image
-                className="object-cover w-full h-[300px] rounded-2xl aspect-[16/9] align-middle"
-                src={article.banner.url}
-                width={300}
-                height={300}
-                alt={article.banner.alt}
-                loading={i === 0 || i === 1 || i === 2 ? "eager" : "lazy"}
-                priority={i === 0 || i === 1 || i === 2 ? true : false}
-                // blurDataURL="/default-og-image.jpg"
-                // placeholder="blur"
-              />
+              <ArticleImage banner={article.banner} i={i} />
             </Link>
             <p className="flex justify-center items-center gap-5">
               <span className="text-secondary/75">

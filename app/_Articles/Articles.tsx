@@ -5,7 +5,11 @@ import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import PresentationalArticles from "./PresentationalArticles";
 import { HomePageArticlesResponse } from "@/types/HomePageArticles";
-export default function Articles() {
+export default function Articles({
+  initialArticles,
+}: {
+  initialArticles?: HomePageArticlesResponse;
+}) {
   const {
     data,
     fetchNextPage,
@@ -21,6 +25,10 @@ export default function Articles() {
         .then((res) => res.data as HomePageArticlesResponse),
     getNextPageParam: (lastPage) =>
       lastPage.pagination.hasMore ? lastPage.pagination.page + 1 : undefined,
+    initialData: {
+      pages: [initialArticles!],
+      pageParams: [1],
+    },
     initialPageParam: 1,
   });
   const { ref, inView } = useInView({
