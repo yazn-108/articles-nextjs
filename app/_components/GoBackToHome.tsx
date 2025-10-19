@@ -5,7 +5,10 @@ const GoBackToHome = ({ children }: { children: React.ReactNode }) => {
 };
 GoBackToHome.BackToHome = function BackToHome() {
   return (
-    <Link href={"/"} className="block mt-5 py-2 px-5 bg-primary rounded-md">
+    <Link
+      href={"/"}
+      className="block w-[15rem] mt-5 py-2 px-5 bg-primary rounded-md"
+    >
       العودة للصفحة الرئيسية
     </Link>
   );

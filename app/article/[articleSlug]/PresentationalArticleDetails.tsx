@@ -18,7 +18,7 @@ const BlockImage = dynamic(() => import("./_components/BlockImage"), {
 });
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-const PresentationalArticle = ({
+const PresentationalArticleDetails = ({
   article,
 }: {
   article: ArticleDetailsResponse;
@@ -203,4 +203,4 @@ const PresentationalArticle = ({
     </div>
   );
 };
-export default PresentationalArticle;
+export default PresentationalArticleDetails;

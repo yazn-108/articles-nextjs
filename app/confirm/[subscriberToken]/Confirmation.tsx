@@ -1,11 +1,13 @@
-import GoBackToHome from "@/app/_components/GoBackToHome";
 import React from "react";
+import dynamic from "next/dynamic";
+const PresentationalConfirmation = dynamic(
+  () => import("./PresentationalConfirmation")
+);
 const Confirmation = async ({
   subscriberToken,
 }: {
   subscriberToken: string;
 }) => {
-  let responseMessage = "جار التحقق...";
   const res = await fetch(`${process.env.url}/api/confirm`, {
     method: "POST",
     headers: {
@@ -15,17 +17,6 @@ const Confirmation = async ({
     cache: "no-store",
   });
   const confirm = await res.json();
-  responseMessage = confirm.message;
-  return (
-    <section className="min-h-dvh flex justify-center items-center">
-      <div className="text-center">
-        <h1 className="text-2xl">حياك الله</h1>
-        <h2 className="text-xl">{responseMessage}</h2>
-        <GoBackToHome>
-          <GoBackToHome.BackToHome />
-        </GoBackToHome>
-      </div>
-    </section>
-  );
+  return <PresentationalConfirmation responseMessage={confirm.message} />;
 };
 export default Confirmation;

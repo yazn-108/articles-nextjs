@@ -10,7 +10,7 @@ export type ArticleTY = {
   createdAt: Date;
   description: string;
 };
-export type HomePageArticlesResponse = {
+export type ArticlesResponse = {
   articles: ArticleTY[];
   pagination: {
     page: number;
@@ -20,7 +20,7 @@ export type HomePageArticlesResponse = {
     totalPages: number;
   };
 };
-export interface PresentationalHomePageArticlesProps {
+export interface PresentationalArticlesProps {
   isError: boolean;
   isLoading: boolean;
   articles: ArticleTY[];

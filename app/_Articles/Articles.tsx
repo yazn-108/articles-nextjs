@@ -4,11 +4,13 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import PresentationalArticles from "./PresentationalArticles";
-import { HomePageArticlesResponse } from "@/types/Articles";
+import { ArticlesResponse } from "@/types/Articles";
 export default function Articles({
   initialArticles,
+  tag,
 }: {
-  initialArticles: HomePageArticlesResponse;
+  initialArticles: ArticlesResponse;
+  tag?: string;
 }) {
   const {
     data,
@@ -18,11 +20,15 @@ export default function Articles({
     isLoading,
     isError,
   } = useInfiniteQuery({
-    queryKey: ["articles"],
+    queryKey: ["articles", tag],
     queryFn: ({ pageParam = 1 }) =>
       axios
-        .get(`/api/articles?page=${pageParam}&limit=6`)
-        .then((res) => res.data as HomePageArticlesResponse),
+        .get(
+          !tag
+            ? `/api/articles?page=${pageParam}&limit=6`
+            : `/api/tags/${tag}?page=${pageParam}&limit=6`
+        )
+        .then((res) => res.data as ArticlesResponse),
     getNextPageParam: (lastPage) =>
       lastPage.pagination.hasMore ? lastPage.pagination.page + 1 : undefined,
     initialData: {

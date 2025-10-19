@@ -1,4 +1,4 @@
-import { PresentationalHomePageArticlesProps } from "@/types/Articles";
+import { PresentationalArticlesProps } from "@/types/Articles";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import React from "react";
@@ -9,7 +9,7 @@ const ArticleImage = dynamic(() => import("./_components/ArticleImage"), {
     <div className=" w-full h-[300px] rounded-2xl aspect-[16/9] bg-gray-600 animate-pulse" />
   ),
 });
-const PresentationalArticles: React.FC<PresentationalHomePageArticlesProps> = ({
+const PresentationalArticles: React.FC<PresentationalArticlesProps> = ({
   isError,
   isLoading,
   articles,
