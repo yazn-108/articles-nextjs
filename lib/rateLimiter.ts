@@ -1,5 +1,5 @@
 /**
- * مكتبة Rate Limiting لمنع الهجمات
+ * Rate Limiting Library to Prevent Attacks
  */
 interface RateLimitStore {
   [key: string]: {
@@ -8,7 +8,7 @@ interface RateLimitStore {
   };
 }
 const store: RateLimitStore = {};
-// تنظيف البيانات المنتهية الصلاحية
+// Clean up expired data
 const cleanupExpiredEntries = () => {
   const now = Date.now();
   Object.keys(store).forEach(key => {
@@ -17,13 +17,13 @@ const cleanupExpiredEntries = () => {
     }
   });
 };
-// مسح جميع البيانات (للاستخدام في الاختبار)
+// Clear all data (for testing use)
 export const clearRateLimitStore = () => {
   Object.keys(store).forEach(key => {
     delete store[key];
   });
 };
-// مسح بيانات Rate Limiting لـ IP محدد
+// Clear Rate Limiting data for a specific IP
 export const clearRateLimitForIP = (ip: string) => {
   Object.keys(store).forEach(key => {
     if (key.includes(ip)) {
@@ -31,7 +31,7 @@ export const clearRateLimitForIP = (ip: string) => {
     }
   });
 };
-// عرض حالة Rate Limiting (للاستخدام في الاختبار)
+// View Rate Limiting status (for testing use)
 export const getRateLimitStatus = () => {
   const now = Date.now();
   const status: { [key: string]: { count: number; resetTime: number; remaining: number } } = {};
@@ -45,7 +45,7 @@ export const getRateLimitStatus = () => {
   });
   return status;
 };
-// الحصول على IP العميل
+// Get the client IP
 export const getClientIP = (req: Request): string => {
   return req.headers.get('x-forwarded-for')?.split(',')[0] ||
     req.headers.get('x-real-ip') ||
@@ -62,9 +62,9 @@ export const rateLimiter = (options: {
     const clientIP = getClientIP(req);
     const now = Date.now();
     const key = `${clientIP}:${Math.floor(now / windowMs)}`;
-    // تنظيف البيانات المنتهية الصلاحية
+    // Clean up expired data
     cleanupExpiredEntries();
-    // التحقق من الحد الحالي
+    // Check current limit
     if (!store[key]) {
       store[key] = {
         count: 1,
@@ -84,21 +84,21 @@ export const rateLimiter = (options: {
     return { allowed: true };
   };
 };
-// Rate Limiter للبحث (أكثر تقييداً)
+// Rate Limiter for search (more restrictive)
 export const searchRateLimiter = rateLimiter({
-  windowMs: 60 * 1000, // دقيقة واحدة
-  maxRequests: 10, // 10 طلبات في الدقيقة
+  windowMs: 60 * 1000,
+  maxRequests: 10, // 10 requests per minute
   message: 'تم تجاوز حد طلبات البحث، حاول مرة أخرى لاحقاً'
 });
-// Rate Limiter للاتصال (أكثر تقييداً)
+// Rate Limiter for connection (more restrictive)
 export const contactRateLimiter = rateLimiter({
-  windowMs: 5 * 60 * 1000, // 5 دقائق
-  maxRequests: 10, // 1 طلب في 5 دقائق (10 في التطوير)
+  windowMs: 5 * 60 * 1000,
+  maxRequests: 10, // 10 requests per minute
   message: 'تم تجاوز حد إرسال الرسائل، حاول مرة أخرى لاحقاً',
 });
 // Rate Limiter عام
 export const generalRateLimiter = rateLimiter({
-  windowMs: 15 * 60 * 1000, // 15 دقيقة
-  maxRequests: 100, // 100 طلب في 15 دقيقة
+  windowMs: 15 * 60 * 1000,
+  maxRequests: 100, // 10 requests 15 minute
   message: 'تم تجاوز حد الطلبات، حاول مرة أخرى لاحقاً'
 });

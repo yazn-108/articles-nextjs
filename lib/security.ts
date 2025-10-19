@@ -1,45 +1,45 @@
 /**
- * مكتبة الأمان لمنع هجمات NoSQL Injection و XSS
+ * Security library to prevent NoSQL Injection and XSS attacks
  */
-// تنظيف المدخلات من الرموز الخطيرة
+// Clean up inputs of dangerous codes
 export const sanitizeInput = (input: string): string => {
   if (typeof input !== 'string') return '';
   return input
     .trim()
-    .replace(/[<>]/g, '') // إزالة علامات HTML
-    .replace(/['"]/g, '') // إزالة علامات التنصيص
-    .replace(/[{}]/g, '') // إزالة الأقواس المعقوفة
-    .replace(/[$]/g, '') // إزالة علامة الدولار
-    .replace(/[\\]/g, '') // إزالة الشرطة المائلة
-    .replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // تنظيف regex
+    .replace(/[<>]/g, '') // Remove HTML tags
+    .replace(/['"]/g, '') // Remove quotation marks
+    .replace(/[{}]/g, '') // Remove brackets
+    .replace(/[$]/g, '') // Remove the dollar sign
+    .replace(/[\\]/g, '') // Remove slash
+    .replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // clean regex
 };
-// تنظيف استعلامات البحث بشكل خاص
+// Clean up search queries specifically
 export const sanitizeSearchQuery = (query: string): string => {
   if (typeof query !== 'string') return '';
-  // إزالة الرموز الخطيرة في regex
+  // Remove dangerous symbols in regex
   const cleaned = query
     .trim()
     .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
     .replace(/[<>{}'"]/g, '');
-  // تحديد طول معقول
+  // Determine a reasonable length
   return cleaned.substring(0, 100);
 };
-// التحقق من صحة slug
+// slug validation
 export const validateSlug = (slug: string): boolean => {
   if (typeof slug !== 'string') return false;
   return /^[a-zA-Z0-9-_]+$/.test(slug) && slug.length > 0 && slug.length < 100;
 };
-// التحقق من صحة tag
+// Validate tag
 export const validateTag = (tag: string): boolean => {
   if (typeof tag !== 'string') return false;
   return /^[a-zA-Z0-9\u0600-\u06FF\s-_]+$/.test(tag) && tag.length > 0 && tag.length < 50;
 };
-// التحقق من صحة استعلام البحث
+// Validate search query
 export const validateSearchQuery = (query: string): boolean => {
   if (typeof query !== 'string') return false;
   return query.length > 0 && query.length < 100 && !query.includes('$');
 };
-// تنظيف HTML لمنع XSS
+// Clean HTML to prevent XSS
 export const sanitizeHTML = (html: string): string => {
   if (typeof html !== 'string') return '';
   return html
@@ -49,7 +49,7 @@ export const sanitizeHTML = (html: string): string => {
     .replace(/'/g, '&#x27;')
     .replace(/\//g, '&#x2F;');
 };
-// تسجيل الأنشطة المشبوهة
+// Recording suspicious activities
 export const logSuspiciousActivity = (req: Request, query: string, endpoint: string) => {
   const suspiciousPatterns = ['$', '{', '}', 'ne', 'gt', 'lt', 'regex', 'where'];
   const hasSuspiciousPattern = suspiciousPatterns.some(pattern =>
@@ -68,23 +68,23 @@ export const logSuspiciousActivity = (req: Request, query: string, endpoint: str
     });
   }
 };
-// إنشاء استعلام آمن لـ MongoDB
+// Create a secure query for MongoDB
 export const createSafeQuery = (field: string, value: string) => {
   const sanitizedValue = sanitizeInput(value);
   return { [field]: { $regex: `^${sanitizedValue}$`, $options: "i" } };
 };
-// إنشاء استعلام regex آمن
+// Create a secure regex query
 export const createSafeRegexQuery = (field: string, value: string) => {
   const sanitizedValue = sanitizeSearchQuery(value);
   return { [field]: { $regex: sanitizedValue, $options: 'i' } };
 };
-// التحقق من صحة البريد الإلكتروني
+// Email verification
 export const validateEmail = (email: string): boolean => {
   if (typeof email !== 'string') return false;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email) && email.length < 100;
 };
-// تنظيف النص للعرض الآمن
+// Clean up text for safe viewing
 export const sanitizeText = (text: string): string => {
   if (typeof text !== 'string') return '';
   return text
@@ -92,5 +92,5 @@ export const sanitizeText = (text: string): string => {
     .replace(/[<>]/g, '')
     .replace(/javascript:/gi, '')
     .replace(/on\w+=/gi, '')
-    .substring(0, 1000); // تحديد طول معقول
+    .substring(0, 1000); // Determine a reasonable length
 };

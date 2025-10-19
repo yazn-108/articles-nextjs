@@ -9,7 +9,7 @@ import {
 import { searchRateLimiter } from "@/lib/rateLimiter";
 export const GET = async (request: Request) => {
   try {
-    // تطبيق Rate Limiting
+    // Rate Limiting
     const rateLimitResult = searchRateLimiter(request);
     if (!rateLimitResult.allowed) {
       return NextResponse.json(
@@ -25,16 +25,16 @@ export const GET = async (request: Request) => {
     const pathname = url.pathname;
     const parts = pathname.split("/");
     const rawQuery = decodeURIComponent(parts[parts.length - 1] || "");
-    // تسجيل الأنشطة المشبوهة
+    // Recording suspicious activities
     logSuspiciousActivity(request, rawQuery, '/api/search');
-    // التحقق من صحة الاستعلام
+    // Verify the validity of the query
     if (!validateSearchQuery(rawQuery)) {
       return NextResponse.json(
         { success: false, message: "استعلام البحث غير صالح" },
         { status: 400 }
       );
     }
-    // تنظيف الاستعلام
+    // Clean up the query
     const query = sanitizeSearchQuery(rawQuery);
     if (!query) {
       return NextResponse.json(
@@ -52,7 +52,7 @@ export const GET = async (request: Request) => {
         { status: 500 }
       );
     }
-    // استخدام استعلامات آمنة
+    // Use secure queries
     const results = await collection
       .find(
         {
@@ -65,12 +65,12 @@ export const GET = async (request: Request) => {
         { projection: { title: 1, slug: 1, _id: 0 } }
       )
       .collation({ locale: "ar", strength: 1 })
-      .limit(50) // تحديد حد أقصى للنتائج
+      .limit(50) // Set a maximum number of results
       .toArray();
     return NextResponse.json({
       success: true,
       articles: results,
-      query: query, // إرجاع الاستعلام المنظف
+      query: query, // Returns the cleaner query
       count: results.length
     });
   } catch (error) {

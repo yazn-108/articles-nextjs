@@ -7,7 +7,7 @@ import {
 import { generalRateLimiter } from '@/lib/rateLimiter';
 export const POST = async (request: Request) => {
   try {
-    // تطبيق Rate Limiting
+    // Rate Limiting
     const rateLimitResult = generalRateLimiter(request);
     if (!rateLimitResult.allowed) {
       return NextResponse.json(
@@ -20,9 +20,9 @@ export const POST = async (request: Request) => {
       );
     }
     const { token } = await request.json();
-    // تسجيل الأنشطة المشبوهة
+    // Recording suspicious activities
     logSuspiciousActivity(request, token, '/api/confirm');
-    // تنظيف الرمز
+    // Clean up the token
     const cleanToken = sanitizeText(token);
     if (!cleanToken) return NextResponse.json({ success: false, message: "Invalid token" }, { status: 400 });
     // Is on the waiting list?

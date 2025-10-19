@@ -1,4 +1,4 @@
-type HomePageArticleTY = {
+export type ArticleTY = {
   _id: string;
   slug: string;
   title: string;
@@ -11,7 +11,7 @@ type HomePageArticleTY = {
   description: string;
 };
 export type HomePageArticlesResponse = {
-  articles: HomePageArticleTY[];
+  articles: ArticleTY[];
   pagination: {
     page: number;
     limit: number;
@@ -23,7 +23,7 @@ export type HomePageArticlesResponse = {
 export interface PresentationalHomePageArticlesProps {
   isError: boolean;
   isLoading: boolean;
-  articles: HomePageArticleTY[];
+  articles: ArticleTY[];
   hasNextPage: boolean;
   inViewRef: (node?: Element | null | undefined) => void;
 }

@@ -9,7 +9,7 @@ import {
 import { generalRateLimiter } from "@/lib/rateLimiter";
 export async function GET(request: Request) {
   try {
-    // تطبيق Rate Limiting
+    // Rate Limiting
     const rateLimitResult = generalRateLimiter(request);
     if (!rateLimitResult.allowed) {
       return NextResponse.json(
@@ -24,19 +24,19 @@ export async function GET(request: Request) {
     const pathname = url.pathname;
     const parts = pathname.split("/");
     const rawSlug = parts[parts.length - 1];
-    // تسجيل الأنشطة المشبوهة
+    // Recording suspicious activities
     logSuspiciousActivity(request, rawSlug, '/api/articles');
-    // التحقق من وجود slug
+    // Check for slug
     if (!rawSlug) {
       return NextResponse.json({ error: "Missing slug" }, { status: 400 });
     }
-    // التحقق من نوع البيانات
+    // Check the data type
     if (typeof rawSlug !== "string") {
       return NextResponse.json({ error: "Invalid slug type" }, { status: 400 });
     }
-    // تنظيف slug
+    // slug cleaning
     const slug = sanitizeInput(rawSlug);
-    // التحقق من صحة slug
+    // slug validation
     if (!validateSlug(slug)) {
       return NextResponse.json({ error: "Invalid slug format" }, { status: 400 });
     }
@@ -47,7 +47,7 @@ export async function GET(request: Request) {
     if (!coll) {
       return NextResponse.json({ error: "Database connection failed" }, { status: 500 });
     }
-    // استخدام استعلام آمن
+    // Use a safe query
     const article = await coll.findOne(createSafeQuery("slug", slug));
     if (!article) {
       return NextResponse.json({ error: "Article not found" }, { status: 404 });

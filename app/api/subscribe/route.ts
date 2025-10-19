@@ -10,7 +10,7 @@ import {
 import { generalRateLimiter } from '@/lib/rateLimiter';
 export const POST = async (request: Request) => {
   try {
-    // تطبيق Rate Limiting
+    // Rate Limiting
     const rateLimitResult = generalRateLimiter(request);
     if (!rateLimitResult.allowed) {
       return NextResponse.json(
@@ -24,11 +24,11 @@ export const POST = async (request: Request) => {
       );
     }
     const { email } = await request.json();
-    // تسجيل الأنشطة المشبوهة
+    // Recording suspicious activities
     logSuspiciousActivity(request, email, '/api/subscribe');
-    // تنظيف البريد الإلكتروني
+    // Email cleaning
     const cleanEmail = email?.trim();
-    // التحقق من صحة البريد الإلكتروني
+    // Email verification
     if (!cleanEmail || !validateEmail(cleanEmail)) {
       return NextResponse.json(
         { success: false, message: "البريد الالكتروني غير صحيح", type: "error" },
@@ -73,7 +73,6 @@ export const POST = async (request: Request) => {
         pass: process.env.GMAIL_APP_PASSWORD
       }
     });
-    // تحويل sendMail إلى Promise باستخدام promisify
     const sendMailAsync = promisify(transporter.sendMail).bind(transporter);
     const confirmUrl = `${process.env.url}/confirm/${token}`;
     await sendMailAsync({
