@@ -58,19 +58,9 @@ const PresentationalArticleDetails = ({
   );
   const renderTextWithLinks = (text: string) => {
     const markdownRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
-    let result = text.replace(
+    const result = text.replace(
       markdownRegex,
       '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
-    );
-    const plainLinkRegex = /(?<!["'>])(https?:\/\/[^\s<]+)/g;
-    result = result.replace(
-      plainLinkRegex,
-      '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
-    );
-    const wwwLinkRegex = /(?<!["'>])(www\.[^\s<]+)/g;
-    result = result.replace(
-      wwwLinkRegex,
-      '<a href="https://$1" target="_blank" rel="noopener noreferrer">$1</a>'
     );
     return result;
   };
