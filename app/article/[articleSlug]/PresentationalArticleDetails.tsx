@@ -57,28 +57,22 @@ const PresentationalArticleDetails = ({
     (block) => block.title && block.title.trim() !== "" && block
   );
   const renderTextWithLinks = (text: string) => {
-    const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/g;
-    const parts = text.split(urlRegex);
-    return parts.map((part, index) => {
-      if (urlRegex.test(part)) {
-        let href = part;
-        if (part.startsWith("www.")) {
-          href = `https://${part}`;
-        }
-        return (
-          <a
-            key={index}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary hover:text-primary/50 transition-colors"
-          >
-            {part}
-          </a>
-        );
-      }
-      return part;
-    });
+    const markdownRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+    let result = text.replace(
+      markdownRegex,
+      '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
+    );
+    const plainLinkRegex = /(?<!["'>])(https?:\/\/[^\s<]+)/g;
+    result = result.replace(
+      plainLinkRegex,
+      '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
+    );
+    const wwwLinkRegex = /(?<!["'>])(www\.[^\s<]+)/g;
+    result = result.replace(
+      wwwLinkRegex,
+      '<a href="https://$1" target="_blank" rel="noopener noreferrer">$1</a>'
+    );
+    return result;
   };
   return (
     <div className="min-h-dvh px-5 md:px-10 py-5">
@@ -145,9 +139,12 @@ const PresentationalArticleDetails = ({
                   </h2>
                 )}
                 {block.content && (
-                  <p className="text-secondary wrap-break-word">
-                    {renderTextWithLinks(block.content)}
-                  </p>
+                  <p
+                    className="text-secondary whitespace-pre-line [&_a]:text-primary [&_a:hover]:text-primary/50 [&_a]:transition-colors"
+                    dangerouslySetInnerHTML={{
+                      __html: renderTextWithLinks(block.content),
+                    }}
+                  />
                 )}
                 {block.code && (
                   <div
