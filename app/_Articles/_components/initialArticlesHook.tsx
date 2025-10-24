@@ -1,3 +1,4 @@
+import { ArticlesResponse } from "@/types/Articles";
 import ArticlesState from "./ArticlesState";
 const initialArticlesHook = async ({ tag }: { tag?: string } = {}) => {
   const res = await fetch(
@@ -13,8 +14,8 @@ const initialArticlesHook = async ({ tag }: { tag?: string } = {}) => {
       <ArticlesState.error />
     </ArticlesState>;
   }
-  const initialArticles = await res.json();
-  if (initialArticles.articles.length === 0) {
+  const initialArticles: ArticlesResponse = await res.json();
+  if (initialArticles.articles?.length === 0) {
     <ArticlesState>
       <ArticlesState.empty />
     </ArticlesState>;

@@ -30,7 +30,7 @@ export default function Articles({
         )
         .then((res) => res.data as ArticlesResponse),
     getNextPageParam: (lastPage) =>
-      lastPage.pagination.hasMore ? lastPage.pagination.page + 1 : undefined,
+      lastPage.pagination?.hasMore ? lastPage.pagination.page + 1 : undefined,
     initialData: {
       pages: [initialArticles!],
       pageParams: [1],
@@ -49,9 +49,10 @@ export default function Articles({
   const articles =
     data?.pages
       .flatMap((page) => page.articles)
+      .filter((article) => article?._id && article?.slug)
       .filter(
         (article, index, self) =>
-          index === self.findIndex((a) => a._id === article._id)
+          index === self.findIndex((a) => a?._id === article?._id)
       ) || [];
   return (
     <PresentationalArticles
