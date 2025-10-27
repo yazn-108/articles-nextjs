@@ -162,7 +162,7 @@ const PresentationalArticleDetails = ({
                         نسخ
                       </button>
                     </div>
-                    <div className="overflow-auto">
+                    <div className="overflow-auto relative">
                       {formattedHtml ? (
                         <div
                           dangerouslySetInnerHTML={{ __html: formattedHtml }}
@@ -173,6 +173,7 @@ const PresentationalArticleDetails = ({
                           {block.code.content}
                         </pre>
                       )}
+                      <div className="pointer-events-none sticky bottom-0 left-0 w-full h-10 bg-gradient-to-t from-[#1f242d] to-transparent"></div>
                     </div>
                   </div>
                 )}
