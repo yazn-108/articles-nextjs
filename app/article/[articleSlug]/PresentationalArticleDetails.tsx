@@ -56,6 +56,11 @@ const PresentationalArticleDetails = ({
   const blocksList = article.blocks.filter(
     (block) => block.title && block.title.trim() !== "" && block
   );
+  function decodeHTML(html: string) {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = html;
+    return txt.value;
+  }
   const renderTextWithLinks = (text: string) => {
     const markdownRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
     const result = text.replace(
@@ -132,7 +137,7 @@ const PresentationalArticleDetails = ({
                   <p
                     className="text-secondary whitespace-pre-line [&_a]:text-primary [&_a:hover]:text-primary/50 [&_a]:transition-colors"
                     dangerouslySetInnerHTML={{
-                      __html: renderTextWithLinks(block.content),
+                      __html: decodeHTML(renderTextWithLinks(block.content)),
                     }}
                   />
                 )}
