@@ -64,6 +64,7 @@ const PresentationalArticleDetails = ({
     );
     return result;
   };
+  console.log(article.blocks);
   return (
     <div className="min-h-dvh px-5 md:px-10 py-5">
       <GoBackToHome>
