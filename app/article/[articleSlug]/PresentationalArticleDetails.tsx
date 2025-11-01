@@ -129,12 +129,20 @@ const PresentationalArticleDetails = ({
                   </h2>
                 )}
                 {block.content && (
-                  <p
-                    className="text-secondary whitespace-pre-line [&_a]:text-primary [&_a:hover]:text-primary/50 [&_a]:transition-colors [&_strong]:font-bold"
-                    dangerouslySetInnerHTML={{
-                      __html: renderTextWithLinks(block.content),
-                    }}
-                  />
+                  <>
+                    <p
+                      className="text-secondary whitespace-pre-line [&_a]:text-primary [&_a:hover]:text-primary/50 [&_a]:transition-colors [&_strong]:font-bold"
+                      dangerouslySetInnerHTML={{
+                        __html: renderTextWithLinks(block.content),
+                      }}
+                    />
+                    <p
+                      className="hidden text-secondary whitespace-pre-line [&_a]:text-primary [&_a:hover]:text-primary/50 [&_a]:transition-colors [&_strong]:font-bold"
+                      dangerouslySetInnerHTML={{
+                        __html: block.content,
+                      }}
+                    />
+                  </>
                 )}
                 {block.code && (
                   <div
