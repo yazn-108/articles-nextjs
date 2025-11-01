@@ -8,6 +8,7 @@ import FooterForms from "./_components/FooterForms";
 import Search from "./_components/Search/page";
 import ScrollToEmail from "./_components/ScrollToEmail";
 import Script from "next/script";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 const Playpen = Playpen_Sans_Arabic({
   variable: "--font-Playpen_Sans_Arabic",
   subsets: ["arabic"],
@@ -86,7 +87,10 @@ export default function RootLayout({
               <Search />
             </div>
           </nav>
-          <main>{children}</main>
+          <main>
+            {children}
+            <SpeedInsights />
+          </main>
           <footer>
             <div dir="rtl" className="border-t border-primary">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 text-center">
