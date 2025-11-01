@@ -130,7 +130,7 @@ const PresentationalArticleDetails = ({
                 )}
                 {block.content && (
                   <p
-                    className="text-secondary whitespace-pre-line [&_a]:text-primary [&_a:hover]:text-primary/50 [&_a]:transition-colors [&_strong]:font-bold"
+                    className="text-secondary whitespace-pre-line [&_a]:text-primary [&_a:hover]:text-primary/50 [&_a]:transition-colors"
                     dangerouslySetInnerHTML={{
                       __html: renderTextWithLinks(block.content),
                     }}

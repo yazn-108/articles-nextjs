@@ -25,3 +25,6 @@ body {
 [data-sonner-toaster="true"] {
   @apply !right-[-12px]  min-[600px]:!right-[24px];
 }
+strong {
+  @apply font-bold;
+}
