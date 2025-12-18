@@ -1,3 +1,0 @@
-User-agent: *
-Disallow:
-Sitemap: https://murakkaz.vercel.app/sitemap.xml
