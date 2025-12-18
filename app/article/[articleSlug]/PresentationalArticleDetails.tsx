@@ -4,6 +4,8 @@ import { ArticleDetailsResponse } from "@/types/ArticleDetails";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import dynamic from "next/dynamic";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 const ArticleImage = dynamic(() => import("./_components/ArticleImage"), {
   ssr: false,
   loading: () => (
@@ -16,8 +18,6 @@ const BlockImage = dynamic(() => import("./_components/BlockImage"), {
     <div className="w-full aspect-[16/9] rounded-2xl bg-gray-600 animate-pulse" />
   ),
 });
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
 const PresentationalArticleDetails = ({
   article,
 }: {
@@ -130,7 +130,7 @@ const PresentationalArticleDetails = ({
                 )}
                 {block.content && (
                   <p
-                    className="text-secondary whitespace-pre-line [&_a]:text-primary [&_a:hover]:text-primary/50 [&_a]:transition-colors [&_strong]:font-bold"
+                    className="text-secondary whitespace-pre-line [&_a]:break-words [&_a]:text-primary [&_a:hover]:text-primary/50 [&_a]:transition-colors [&_strong]:font-bold"
                     dangerouslySetInnerHTML={{
                       __html: renderTextWithLinks(block.content),
                     }}
