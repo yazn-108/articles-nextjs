@@ -1,12 +1,12 @@
-import { NextResponse } from "next/server";
 import { getColl } from "@/lib/mongodb";
-import {
-  sanitizeInput,
-  validateTag,
-  logSuspiciousActivity,
-  createSafeQuery
-} from "@/lib/security";
 import { generalRateLimiter } from "@/lib/rateLimiter";
+import {
+  createSafeQuery,
+  logSuspiciousActivity,
+  sanitizeInput,
+  validateTag
+} from "@/lib/security";
+import { NextResponse } from "next/server";
 export async function GET(request: Request) {
   try {
     // Rate Limiting
@@ -50,7 +50,7 @@ export async function GET(request: Request) {
     }
     const query = createSafeQuery("tag", tag);
     const articles = await coll
-      .find(query, {
+      .find({ SubscribersNotified: { $ne: false }, tag: tag }, {
         projection: {
           title: 1,
           banner: 1,
