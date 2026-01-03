@@ -56,13 +56,14 @@ const PresentationalArticleDetails = ({
   const blocksList = article.blocks.filter(
     (block) => block.title && block.title.trim() !== "" && block
   );
+  const escapeHTML = (text: string) =>
+    text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   const renderTextWithLinks = (text: string) => {
-    const markdownRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
-    const result = text.replace(
-      markdownRegex,
+    const safeText = escapeHTML(text);
+    return safeText.replace(
+      /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
       '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
     );
-    return result;
   };
   return (
     <div className="min-h-dvh px-5 md:px-10 py-5">
