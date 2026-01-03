@@ -1,12 +1,12 @@
-import { NextResponse } from "next/server";
 import { getColl } from "@/lib/mongodb";
-import {
-  sanitizeInput,
-  validateSlug,
-  logSuspiciousActivity,
-  createSafeQuery
-} from "@/lib/security";
 import { generalRateLimiter } from "@/lib/rateLimiter";
+import {
+  createSafeQuery,
+  logSuspiciousActivity,
+  sanitizeInput,
+  validateSlug
+} from "@/lib/security";
+import { NextResponse } from "next/server";
 export async function GET(request: Request) {
   try {
     // Rate Limiting
@@ -48,7 +48,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Database connection failed" }, { status: 500 });
     }
     // Use a safe query
-    const article = await coll.findOne(createSafeQuery("slug", slug));
+    const article = await coll.findOne({ ...createSafeQuery("slug", slug), SubscribersNotified: true });
     if (!article) {
       return NextResponse.json({ error: "Article not found" }, { status: 404 });
     }
