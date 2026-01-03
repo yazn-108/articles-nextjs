@@ -7,7 +7,7 @@ GoBackToHome.BackToHome = function BackToHome() {
   return (
     <Link
       href={"/"}
-      className="block w-[15rem] mt-5 py-2 px-5 bg-primary rounded-md"
+      className="block w-[15rem] mt-5 py-2 px-5 bg-primary rounded-md text-center"
     >
       العودة للصفحة الرئيسية
     </Link>
