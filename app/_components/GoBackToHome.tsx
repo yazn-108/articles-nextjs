@@ -13,11 +13,15 @@ GoBackToHome.BackToHome = function BackToHome() {
     </Link>
   );
 };
-GoBackToHome.BackToHomeIcon = function BackToHomeIcon() {
+GoBackToHome.BackToHomeIcon = function BackToHomeIcon({
+  className,
+}: {
+  className?: string;
+}) {
   return (
     <Link
       href={"/"}
-      className="p-2 mb-5 bg-primary rounded-md inline-flex text-center justify-center"
+      className={`p-2 mb-5 bg-primary rounded-md inline-flex text-center justify-center ${className || ""}`}
     >
       <button className="cursor-pointer">
         <svg

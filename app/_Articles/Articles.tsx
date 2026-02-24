@@ -1,15 +1,15 @@
 "use client";
-import axios from "axios";
+import { ArticlesResponse } from "@/types/Articles";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import PresentationalArticles from "./PresentationalArticles";
-import { ArticlesResponse } from "@/types/Articles";
 export default function Articles({
   initialArticles,
   tag,
 }: {
-  initialArticles: ArticlesResponse;
+  initialArticles?: ArticlesResponse;
   tag?: string;
 }) {
   const {
@@ -26,13 +26,13 @@ export default function Articles({
         .get(
           !tag
             ? `/api/articles?page=${pageParam}&limit=6`
-            : `/api/tags/${tag}?page=${pageParam}&limit=6`
+            : `/api/tags/${tag}?page=${pageParam}&limit=6`,
         )
         .then((res) => res.data as ArticlesResponse),
     getNextPageParam: (lastPage) =>
       lastPage.pagination?.hasMore ? lastPage.pagination.page + 1 : undefined,
-    initialData: {
-      pages: [initialArticles!],
+    initialData: initialArticles && {
+      pages: [initialArticles] as ArticlesResponse[],
       pageParams: [1],
     },
     initialPageParam: 1,
@@ -52,7 +52,7 @@ export default function Articles({
       .filter((article) => article?._id && article?.slug)
       .filter(
         (article, index, self) =>
-          index === self.findIndex((a) => a?._id === article?._id)
+          index === self.findIndex((a) => a?._id === article?._id),
       ) || [];
   return (
     <PresentationalArticles
