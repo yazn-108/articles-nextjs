@@ -1,48 +1,17 @@
 "use client";
-
-import * as React from "react";
-import { DayPicker, type DayButtonProps } from "react-day-picker";
-import "react-day-picker/dist/style.css";
-
-type CalendarProps = React.ComponentProps<typeof DayPicker>;
-
-export default function Calendar(props: CalendarProps) {
+import { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+const Calendar = ({ name }: { name: string }) => {
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
   return (
-    <DayPicker
-      showOutsideDays
-      className="custom-calendar"
-      components={{
-        DayButton: CustomDayButton,
-      }}
-      {...props}
+    <DatePicker
+      name={name}
+      dateFormat={"dd/MM/yyyy"}
+      selected={startDate}
+      onChange={(date: Date | null) => setStartDate(date)}
+      className="border-[#55b0e9] border-2 rounded-md w-full px-2 py-0.5 outline-none focus:ring-2 focus:ring-primary"
     />
   );
-}
-
-function CustomDayButton(props: DayButtonProps) {
-  const { day, modifiers, ...rest } = props;
-
-  return (
-    <button
-      {...rest}
-      data-today={modifiers.today}
-      data-selected={modifiers.selected}
-      data-outside={modifiers.outside}
-      style={{
-        width: 36,
-        height: 36,
-        borderRadius: 6,
-        border: modifiers.selected ? "2px solid #2563eb" : "1px solid #e5e7eb",
-        background: modifiers.selected
-          ? "#2563eb"
-          : modifiers.today
-            ? "#f3f4f6"
-            : "white",
-        color: modifiers.selected ? "white" : "black",
-        cursor: "pointer",
-      }}
-    >
-      {day.date.getDate()}
-    </button>
-  );
-}
+};
+export default Calendar;

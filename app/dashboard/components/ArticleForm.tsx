@@ -1,14 +1,17 @@
 import { Activity, useState } from "react";
 import { createPortal } from "react-dom";
+import Calendar from "./calendar";
 const ArticleForm = ({ buttonText }: { buttonText: string }) => {
   const [IsOpen, setIsOpen] = useState<boolean>(false);
-  const handleClose = (e: React.MouseEvent<HTMLElement>) => {
+  const handleClose = () => {
     setIsOpen(false);
   };
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(e);
-    // setIsOpen(false);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    console.log(data);
   };
   return (
     <div className="m-4">
@@ -22,7 +25,7 @@ const ArticleForm = ({ buttonText }: { buttonText: string }) => {
         {IsOpen &&
           createPortal(
             <section
-              onClick={(e) => handleClose(e)}
+              onClick={handleClose}
               className="backdrop-blur-3xl size-full z-50 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
             >
               <form
@@ -38,20 +41,20 @@ const ArticleForm = ({ buttonText }: { buttonText: string }) => {
                   x
                 </button>
                 <div className="overflow-x-auto p-4 space-y-3">
-                  <Input type="text" placeholder="عنوان المقالة" />
-                  <Input type="text" placeholder="Slug (عنوان في الرابط)" />
-                  <Input type="text" placeholder="التاغ (tag)" />
-                  {/* <label htmlFor="date">
-                    {format(new Date(2014, 1, 11), "dd-MM-yyyy")}
-                  </label>
-                  <Input type="date" id="date" />
-                  <Calendar /> */}
-                  <Input type="file" />
+                  <Input name="title" type="text" placeholder="عنوان المقالة" />
+                  <Input
+                    name="slug"
+                    type="text"
+                    placeholder="Slug (عنوان في الرابط)"
+                  />
+                  <Input name="tags" type="text" placeholder="التاغ (tag)" />
                   <Textarea
-                    name="content"
+                    name="description"
                     placeholder="محتوى المقالة"
                     className="mt-4 resize-none h-48"
                   />
+                  <Calendar name="date" />
+                  <Input name="image" type="file" />
                 </div>
                 <button
                   type="submit"
