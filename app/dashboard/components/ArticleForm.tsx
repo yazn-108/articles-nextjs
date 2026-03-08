@@ -1,7 +1,14 @@
+import { ArticleTY } from "@/types/Articles";
 import { Activity, useState } from "react";
 import { createPortal } from "react-dom";
 import Calendar from "./calendar";
-const ArticleForm = ({ buttonText }: { buttonText: string }) => {
+const ArticleForm = ({
+  buttonText,
+  article,
+}: {
+  buttonText: string;
+  article?: ArticleTY;
+}) => {
   const [IsOpen, setIsOpen] = useState<boolean>(false);
   const handleClose = () => {
     setIsOpen(false);
@@ -41,19 +48,33 @@ const ArticleForm = ({ buttonText }: { buttonText: string }) => {
                   x
                 </button>
                 <div className="overflow-x-auto p-4 space-y-3">
-                  <Input name="title" type="text" placeholder="عنوان المقالة" />
+                  <Input
+                    name="title"
+                    type="text"
+                    placeholder="عنوان المقالة"
+                    defaultValue={article?.title}
+                  />
                   <Input
                     name="slug"
                     type="text"
                     placeholder="Slug (عنوان في الرابط)"
+                    defaultValue={article?.slug}
                   />
-                  <Input name="tags" type="text" placeholder="التاغ (tag)" />
+                  <Input
+                    name="tags"
+                    type="text"
+                    placeholder="التاغ (tag)"
+                    defaultValue={article?.tag}
+                  />
                   <Textarea
                     name="description"
-                    placeholder="محتوى المقالة"
+                    placeholder="وصف المقالة"
                     className="mt-4 resize-none h-48"
                   />
-                  <Calendar name="date" />
+                  <Calendar
+                    name="date"
+                    date={article?.createdAt && new Date(article?.createdAt)}
+                  />
                   <Input name="image" type="file" />
                 </div>
                 <button

@@ -2,8 +2,8 @@
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-const Calendar = ({ name }: { name: string }) => {
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
+const Calendar = ({ name, date }: { name: string; date?: Date }) => {
+  const [startDate, setStartDate] = useState<Date | null>(date ?? new Date());
   return (
     <DatePicker
       name={name}
