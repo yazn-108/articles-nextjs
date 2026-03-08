@@ -1,11 +1,9 @@
+import { ImageType } from "./ArticleDetails";
 export type ArticleTY = {
-  _id: string;
+  _id?: string;
   slug: string;
   title: string;
-  banner: {
-    url: string;
-    alt: string;
-  };
+  banner: ImageType;
   tag: string;
   createdAt: Date;
   description: string;

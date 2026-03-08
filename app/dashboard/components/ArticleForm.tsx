@@ -1,3 +1,4 @@
+import HandleUploadImage from "@/hooks/HandleUploadImage";
 import { ArticleTY } from "@/types/Articles";
 import { Activity, useState } from "react";
 import { createPortal } from "react-dom";
@@ -13,12 +14,26 @@ const ArticleForm = ({
   const handleClose = () => {
     setIsOpen(false);
   };
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
-    console.log(data);
+    const image = await HandleUploadImage({
+      file: data.banner as File,
+    });
+    const articleData: ArticleTY = {
+      slug: data.slug as string,
+      title: data.title as string,
+      tag: data.tag as string,
+      description: data.description as string,
+      createdAt: new Date(data.createdAt as string),
+      banner: {
+        url: image!.secure_url,
+        alt: image!.public_id,
+      },
+    };
+    console.log(articleData);
   };
   return (
     <div className="m-4">
@@ -61,7 +76,7 @@ const ArticleForm = ({
                     defaultValue={article?.slug}
                   />
                   <Input
-                    name="tags"
+                    name="tag"
                     type="text"
                     placeholder="التاغ (tag)"
                     defaultValue={article?.tag}
@@ -72,10 +87,10 @@ const ArticleForm = ({
                     className="mt-4 resize-none h-48"
                   />
                   <Calendar
-                    name="date"
+                    name="createdAt"
                     date={article?.createdAt && new Date(article?.createdAt)}
                   />
-                  <Input name="image" type="file" />
+                  <Input name="banner" type="file" />
                 </div>
                 <button
                   type="submit"
