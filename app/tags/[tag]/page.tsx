@@ -1,7 +1,6 @@
-import GoBackToHome from "@/app/_components/GoBackToHome";
-import React from "react";
-import initialArticlesHook from "@/app/_Articles/_components/initialArticlesHook";
 import ArticlesState from "@/app/_Articles/_components/ArticlesState";
+import initialArticlesHook from "@/app/_Articles/_components/initialArticlesHook";
+import GoBackToHome from "@/app/_components/GoBackToHome";
 import dynamic from "next/dynamic";
 const Articles = dynamic(() => import("@/app/_Articles/Articles"), {
   loading: () => (

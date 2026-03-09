@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server"
 import { getColl } from "@/lib/mongodb"
-export async function GET(request: Request) {
+import { NextRequest, NextResponse } from "next/server"
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const page = Number.parseInt(searchParams.get("page") || "1")

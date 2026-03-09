@@ -24,5 +24,5 @@ export type ArticleDetailsResponse = {
   description: string;
   createdAt: Date;
   banner: ImageType;
-  blocks: Block[];
+  blocks?: Block[];
 };

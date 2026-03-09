@@ -8,9 +8,11 @@ import PresentationalArticles from "./PresentationalArticles";
 export default function Articles({
   initialArticles,
   tag,
+  admin,
 }: {
   initialArticles?: ArticlesResponse;
   tag?: string;
+  admin?: boolean;
 }) {
   const {
     data,
@@ -24,9 +26,11 @@ export default function Articles({
     queryFn: ({ pageParam = 1 }) =>
       axios
         .get(
-          !tag
-            ? `/api/articles?page=${pageParam}&limit=6`
-            : `/api/tags/${tag}?page=${pageParam}&limit=6`,
+          !admin
+            ? !tag
+              ? `/api/articles?page=${pageParam}&limit=6`
+              : `/api/tags/${tag}?page=${pageParam}&limit=6`
+            : `/api/admin/articles?page=${pageParam}&limit=6`,
         )
         .then((res) => res.data as ArticlesResponse),
     getNextPageParam: (lastPage) =>
@@ -61,6 +65,7 @@ export default function Articles({
       articles={articles}
       hasNextPage={hasNextPage}
       inViewRef={ref}
+      admin={admin}
     />
   );
 }

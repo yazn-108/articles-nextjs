@@ -13,9 +13,9 @@ const Page = async ({
   params: Promise<{ articleSlug: string }>;
 }) => {
   const { articleSlug } = await params;
-  const res = await fetch(`${process.env.url}/api/articles/${articleSlug}`, {
-    next: { revalidate: 1000 * 60 * 5 },
-  });
+  const res = await fetch(
+    `${process.env.url}/api/admin/articles/${articleSlug}`,
+  );
   if (!res.ok) return <ArticleNotFound />;
   const article = await res.json();
   return <PresentationalArticleDetails article={article} />;

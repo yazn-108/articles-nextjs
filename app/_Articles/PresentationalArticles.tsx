@@ -6,7 +6,7 @@ import ArticlesState from "./_components/ArticlesState";
 const ArticleImage = dynamic(() => import("./_components/ArticleImage"), {
   ssr: false,
   loading: () => (
-    <div className=" w-full h-[300px] rounded-2xl aspect-[16/9] bg-gray-600 animate-pulse" />
+    <div className=" w-full h-75 rounded-2xl aspect-video bg-gray-600 animate-pulse" />
   ),
 });
 const PresentationalArticles: React.FC<PresentationalArticlesProps> = ({
@@ -15,6 +15,7 @@ const PresentationalArticles: React.FC<PresentationalArticlesProps> = ({
   articles,
   hasNextPage,
   inViewRef,
+  admin,
 }) => {
   return (
     <>
@@ -36,7 +37,14 @@ const PresentationalArticles: React.FC<PresentationalArticlesProps> = ({
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-0 py-5 sm:p-5 gap-x-10 gap-y-16">
         {articles.map((article, i: number) => (
           <div key={article._id} className="space-y-4">
-            <Link href={`/article/${article.slug}`} className="block">
+            <Link
+              href={
+                !admin
+                  ? `/article/${article.slug}`
+                  : `/dashboard/article/${article.slug}`
+              }
+              className="block"
+            >
               <ArticleImage banner={article.banner} i={i} />
             </Link>
             <p className="flex justify-center items-center gap-5">
@@ -50,7 +58,13 @@ const PresentationalArticles: React.FC<PresentationalArticlesProps> = ({
                 {article.tag}
               </Link>
             </p>
-            <Link href={`/article/${article.slug}`}>
+            <Link
+              href={
+                !admin
+                  ? `/article/${article.slug}`
+                  : `/dashboard/article/${article.slug}`
+              }
+            >
               <h2 className="text-xl font-bold mt-2 mb-4 truncate max-w-full">
                 {article.title}
               </h2>

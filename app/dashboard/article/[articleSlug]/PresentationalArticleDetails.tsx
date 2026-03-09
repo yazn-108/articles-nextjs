@@ -68,7 +68,7 @@ const PresentationalArticleDetails = ({
   return (
     <div className="min-h-dvh px-5 md:px-10 py-5">
       <GoBackToHome>
-        <GoBackToHome.BackToHomeIcon />
+        <GoBackToHome.BackToHomeIcon url="/dashboard" />
       </GoBackToHome>
       <header className="border-b border-primary pb-10 flex flex-col-reverse md:flex-row items-center gap-10">
         <div className="flex-1 md:max-w-[calc(100%-400px)]">

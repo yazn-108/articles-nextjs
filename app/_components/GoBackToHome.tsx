@@ -3,11 +3,11 @@ import React from "react";
 const GoBackToHome = ({ children }: { children: React.ReactNode }) => {
   return children;
 };
-GoBackToHome.BackToHome = function BackToHome() {
+GoBackToHome.BackToHome = function BackToHome({ url }: { url?: string }) {
   return (
     <Link
-      href={"/"}
-      className="block w-[15rem] mt-5 py-2 px-5 bg-primary rounded-md text-center"
+      href={url || "/"}
+      className="block w-60 mt-5 py-2 px-5 bg-primary rounded-md text-center"
     >
       العودة للصفحة الرئيسية
     </Link>
@@ -15,12 +15,14 @@ GoBackToHome.BackToHome = function BackToHome() {
 };
 GoBackToHome.BackToHomeIcon = function BackToHomeIcon({
   className,
+  url,
 }: {
   className?: string;
+  url?: string;
 }) {
   return (
     <Link
-      href={"/"}
+      href={url || "/"}
       className={`p-2 mb-5 bg-primary rounded-md inline-flex text-center justify-center ${className || ""}`}
     >
       <button className="cursor-pointer">

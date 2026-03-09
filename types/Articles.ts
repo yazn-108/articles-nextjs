@@ -1,6 +1,7 @@
 import { ImageType } from "./ArticleDetails";
 export type ArticleTY = {
   _id?: string;
+  SubscribersNotified: false,
   slug: string;
   title: string;
   banner: ImageType;
@@ -23,5 +24,6 @@ export interface PresentationalArticlesProps {
   isLoading: boolean;
   articles: ArticleTY[];
   hasNextPage: boolean;
+  admin?: boolean;
   inViewRef: (node?: Element | null | undefined) => void;
 }
