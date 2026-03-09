@@ -7,7 +7,7 @@ const Page = () => {
     <div>
       <AuthButton />
       <CreateArticle />
-      <Articles admin={false} />
+      <Articles admin={true} />
     </div>
   );
 };
