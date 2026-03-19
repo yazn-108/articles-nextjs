@@ -23,6 +23,7 @@ export type ArticleDetailsResponse = {
   tag: string;
   description: string;
   createdAt: Date;
+  SubscribersNotified?: boolean;
   banner: ImageType;
   blocks?: Block[];
 };
