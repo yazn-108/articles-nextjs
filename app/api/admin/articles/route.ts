@@ -1,7 +1,12 @@
+import IsAdmin from "@/hooks/IsAdmin";
 import { getColl } from "@/lib/mongodb";
 import { ArticleTY } from "@/types/Articles";
 import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
+  const session = await IsAdmin();
+  if (!session) {
+    return NextResponse.json({ error: "غير مسموح" }, { status: 401 });
+  }
   try {
     const { searchParams } = new URL(request.url)
     const page = Number.parseInt(searchParams.get("page") || "1")
@@ -38,6 +43,10 @@ export async function GET(request: NextRequest) {
   }
 }
 export async function POST(req: NextRequest) {
+  const session = await IsAdmin();
+  if (!session) {
+    return NextResponse.json({ error: "غير مسموح" }, { status: 401 });
+  }
   try {
     const { title, slug, description, tag, createdAt, banner, SubscribersNotified }: ArticleTY = await req.json();
     const coll = await getColl({
