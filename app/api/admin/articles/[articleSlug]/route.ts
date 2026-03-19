@@ -1,3 +1,4 @@
+import IsAdmin from "@/hooks/IsAdmin";
 import { getColl } from "@/lib/mongodb";
 import { generalRateLimiter } from "@/lib/rateLimiter";
 import {
@@ -8,6 +9,10 @@ import {
 } from "@/lib/security";
 import { NextResponse } from "next/server";
 export async function GET(request: Request) {
+  const session = await IsAdmin();
+  if (!session) {
+    return NextResponse.json({ error: "غير مسموح" }, { status: 401 });
+  }
   try {
     // Rate Limiting
     const rateLimitResult = generalRateLimiter(request);
