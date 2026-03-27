@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import { cookies } from "next/headers";
 import ArticleNotFound from "./_components/ArticleNotFound";
 import Skeleton from "./_components/Skeleton";
 const PresentationalArticleDetails = dynamic(
@@ -13,8 +14,13 @@ const Page = async ({
   params: Promise<{ articleSlug: string }>;
 }) => {
   const { articleSlug } = await params;
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore.toString();
   const res = await fetch(
     `${process.env.url}/api/admin/articles/${articleSlug}`,
+    {
+      headers: { cookie: cookieHeader },
+    },
   );
   if (!res.ok) return <ArticleNotFound />;
   const article = await res.json();
