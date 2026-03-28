@@ -10,7 +10,7 @@ const BlockImage = ({
 }) => {
   return (
     <Image
-      className="object-cover w-full rounded-2xl aspect-[16/9]"
+      className="object-cover w-full rounded-2xl aspect-video"
       src={image.url}
       width={600}
       height={400}
