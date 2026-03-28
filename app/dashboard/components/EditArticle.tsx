@@ -49,7 +49,8 @@ const EditArticle = ({ article }: { article: ArticleDetailsResponse }) => {
       SubscribersNotified: false,
       banner: {
         url: image?.secure_url ?? article.banner.url,
-        alt: image?.public_id ?? article.banner.alt,
+        public_id: image?.public_id ?? article.banner.public_id,
+        alt: (data["banner-description"] as string) ?? article.banner.alt,
       },
     };
     if (JSON.stringify(articleData) !== JSON.stringify(article)) {
@@ -112,6 +113,12 @@ const EditArticle = ({ article }: { article: ArticleDetailsResponse }) => {
                     defaultValue={article.description}
                   />
                   <Input name="banner" type="file" />
+                  <Input
+                    name="banner-description"
+                    type="text"
+                    placeholder="وصف الصورة (alt)"
+                    defaultValue={article.banner.alt}
+                  />
                   <div>
                     {/* title: string | null;
                       content?: string | null;

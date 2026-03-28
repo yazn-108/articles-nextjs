@@ -45,7 +45,8 @@ const CreateArticle = () => {
       SubscribersNotified: false,
       banner: {
         url: image!.secure_url,
-        alt: image!.public_id,
+        public_id: image!.public_id,
+        alt: data["banner-description"] as string,
       },
     };
     CreateNewArticle.mutate(articleData);
@@ -92,6 +93,11 @@ const CreateArticle = () => {
                   />
                   <Calendar name="createdAt" />
                   <Input name="banner" type="file" />
+                  <Input
+                    name="banner-description"
+                    type="text"
+                    placeholder="وصف الصورة (alt)"
+                  />
                 </div>
                 <button
                   type="submit"

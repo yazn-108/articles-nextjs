@@ -1,5 +1,6 @@
 export type ImageType = {
   url: string;
+  public_id: string;
   alt: string;
 };
 type CodeBlock = {
