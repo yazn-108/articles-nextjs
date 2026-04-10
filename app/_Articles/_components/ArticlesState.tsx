@@ -12,7 +12,7 @@ ArticlesState.loading = function Loading() {
             index > 2 ? "hidden lg:block" : index > 0 ? "hidden md:block" : ""
           }`}
         >
-          <div className="bg-gray-700 rounded-2xl w-full h-[300px] aspect-[16/9]"></div>
+          <div className="bg-gray-700 rounded-2xl w-full h-75 aspect-video"></div>
           <div className="flex justify-center items-center gap-5">
             <div className="bg-gray-600 h-4 w-20 rounded"></div>
             <div className="bg-gray-600 h-6 w-16 rounded-full"></div>

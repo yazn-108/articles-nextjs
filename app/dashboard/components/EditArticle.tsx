@@ -1,5 +1,4 @@
 "use client";
-import HandleUploadImage from "@/hooks/HandleUploadImage";
 import { ArticleDetailsResponse } from "@/types/ArticleDetails";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
@@ -33,29 +32,78 @@ const EditArticle = ({ article }: { article: ArticleDetailsResponse }) => {
     const form = e.currentTarget;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
-    const banner = data.banner as File;
-    const image =
-      banner.size > 0
-        ? await HandleUploadImage({
-            file: banner,
-            public_id: article.banner.alt,
-          })
-        : null;
-    const articleData: ArticleDetailsResponse = {
-      ...article,
-      slug: (data.slug as string) ?? article.slug,
-      title: (data.title as string) ?? article.title,
-      tag: (data.tag as string) ?? article.tag,
-      description: (data.description as string) ?? article.description,
-      createdAt: new Date(data.createdAt as string),
-      SubscribersNotified: data["subscribers-notified"] === "on",
-      banner: {
-        url: image?.secure_url ?? article.banner.url,
-        public_id: image?.public_id ?? article.banner.public_id,
-        alt: (data["banner-description"] as string) ?? article.banner.alt,
-      },
+    // const banner = data.banner as File;
+    // const image =
+    //   banner.size > 0
+    //     ? await HandleUploadImage({
+    //         file: banner,
+    //         public_id: article.banner.alt,
+    //       })
+    //     : null;
+    // const articleData: ArticleDetailsResponse = {
+    //   ...article,
+    //   slug: (data.slug as string) ?? article.slug,
+    //   title: (data.title as string) ?? article.title,
+    //   tag: (data.tag as string) ?? article.tag,
+    //   description: (data.description as string) ?? article.description,
+    //   createdAt: new Date(data.createdAt as string),
+    //   SubscribersNotified: data["subscribers-notified"] === "on",
+    //   banner: {
+    //     url: image?.secure_url ?? article.banner.url,
+    //     public_id: image?.public_id ?? article.banner.public_id,
+    //     alt: (data["banner-description"] as string) ?? article.banner.alt,
+    //   },
+    // };
+    const x = {
+      blocks: article.blocks?.map((block, index) => {
+        const blockImage = data[`blocks[${index}].image`] as File;
+        return {
+          // ...block,
+          // title: (data[`blocks[${index}].title`] as string) ?? block.title,
+          // content:
+          //   (data[`blocks[${index}].content`] as string) ?? block.content,
+          image:
+            blockImage && blockImage.size > 0
+              ? {
+                  url: URL.createObjectURL(blockImage),
+                  public_id: `${article.slug}-block-${index}`,
+                  alt:
+                    (data[`blocks[${index}].image-description`] as string) ??
+                    block.image?.alt ??
+                    "",
+                }
+              : (block.image ?? null),
+        };
+      }),
     };
-    console.log(articleData);
+    console.log(x.blocks);
+    //
+    // Handle blocks as needed, this is a simplified example
+    // blocks: article.blocks?.map((block, index) => {
+    //   const blockTitle = data[`blocks[${index}].title`] as string;
+    //   const blockContent = data[`blocks[${index}].content`] as string;
+    //   const blockImageFile = data[`blocks[${index}].image`] as File;
+    //   const blockImageDescription = data[
+    //     `blocks[${index}].image-description`
+    //   ] as string;
+    //   const blockImage =
+    //     blockImageFile.size > 0 &&
+    //     HandleUploadImage({
+    //       file: blockImageFile,
+    //       public_id: `${article.slug}-block-${index}`,
+    //     });
+    //   return {
+    //     ...block,
+    //     title: blockTitle,
+    //     content: blockContent,
+    //     image: {
+    //       url: blockImage?.secure_url ?? block.image?.url,
+    //       public_id: blockImage?.public_id ?? block.image?.public_id,
+    //       alt: blockImageDescription ?? block.image?.alt,
+    //     },
+    //   };
+    // }),
+    //
     // if (JSON.stringify(articleData) !== JSON.stringify(article)) {
     //   EditArticleInfo.mutate(articleData);
     //   // setIsOpen(false);
@@ -113,7 +161,7 @@ const EditArticle = ({ article }: { article: ArticleDetailsResponse }) => {
                   <Textarea
                     name="description"
                     placeholder="وصف المقالة"
-                    className="mt-4 resize-none h-48"
+                    className="h-24"
                     defaultValue={article.description}
                   />
                   <Calendar name="createdAt" />
@@ -148,6 +196,39 @@ const EditArticle = ({ article }: { article: ArticleDetailsResponse }) => {
                         url: string;
                         title: string;
                       }; */}
+                    {article.blocks &&
+                      article.blocks.map((block, index) => (
+                        <div
+                          key={block.id}
+                          className="grid sm:grid-cols-2 gap-4 my-8"
+                        >
+                          <Input
+                            name={`blocks[${index}].title`}
+                            type="text"
+                            placeholder="عنوان البلوك"
+                            defaultValue={block.title ?? ""}
+                            className="order-1"
+                          />
+                          <Textarea
+                            name={`blocks[${index}].content`}
+                            placeholder="محتوى البلوك"
+                            className="h-24 order-2 sm:order-3"
+                            defaultValue={block.content ?? ""}
+                          />
+                          <Input
+                            name={`blocks[${index}].image-description`}
+                            type="text"
+                            placeholder="وصف الصورة (alt)"
+                            defaultValue={block.image?.alt}
+                            className={`order-3 sm:order-2 ${!block.image && "border-gray-600"}`}
+                          />
+                          <Input
+                            name={`blocks[${index}].image`}
+                            type="file"
+                            className={`order-4 ${!block.image && "border-gray-600"}`}
+                          />
+                        </div>
+                      ))}
                   </div>
                 </div>
                 <button

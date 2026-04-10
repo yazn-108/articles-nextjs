@@ -7,7 +7,7 @@ const initialArticlesHook = async ({ tag }: { tag?: string } = {}) => {
       : `${process.env.url}/api/tags/${tag}?page=1&limit=6`,
     {
       next: { revalidate: !tag ? 1000 * 60 * 5 : 0 },
-    }
+    },
   );
   if (!res.ok) {
     <ArticlesState>
