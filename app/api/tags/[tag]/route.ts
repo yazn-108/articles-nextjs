@@ -23,8 +23,10 @@ export async function GET(request: Request) {
     const { pathname, searchParams } = new URL(request.url);
     // pagination parameters
     const page = Number.parseInt(searchParams.get("page") || "1");
+    const safePage = isNaN(page) || page < 1 ? 1 : page
     const limit = Number.parseInt(searchParams.get("limit") || "10");
-    const skip = (page - 1) * limit;
+    const safeLimit = isNaN(limit) || limit < 1 ? 6 : limit
+    const skip = (safePage - 1) * safeLimit;
     // extract tag
     const parts = pathname.split("/");
     const rawTag = parts[parts.length - 1];
@@ -62,19 +64,19 @@ export async function GET(request: Request) {
       })
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limit)
+      .limit(safeLimit)
       .toArray();
     const totalCount = await coll.countDocuments(query);
-    const hasMore = skip + limit < totalCount;
+    const hasMore = skip + safeLimit < totalCount;
     return NextResponse.json(
       {
         articles,
         pagination: {
-          page,
-          limit,
+          page: safePage,
+          limit: safeLimit,
           totalCount,
           hasMore,
-          totalPages: Math.ceil(totalCount / limit),
+          totalPages: Math.ceil(totalCount / safeLimit),
         },
       },
       { status: 200 }

@@ -1,9 +1,15 @@
+import IsAdmin from "@/hooks/IsAdmin";
 import cloudinary from "@/lib/cloudinary";
+import { NextResponse } from "next/server";
 export async function POST(req: Request) {
+  const session = await IsAdmin();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
     const { file, public_id } = await req.json();
     if (!file) {
-      return Response.json({ error: "No file provided" }, { status: 400 });
+      return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
     const options: Record<string, boolean> = {};
     if (public_id) {
@@ -11,12 +17,12 @@ export async function POST(req: Request) {
       options.overwrite = true;
     }
     const result = await cloudinary.uploader.upload(file, options);
-    return Response.json({
+    return NextResponse.json({
       secure_url: result.secure_url,
       public_id: result.public_id,
     });
   } catch (error: unknown) {
     console.error("Upload error:", error);
-    return Response.json({ error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ error: (error as Error).message }, { status: 500 });
   }
 }

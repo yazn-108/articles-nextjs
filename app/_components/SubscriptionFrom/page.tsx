@@ -1,7 +1,8 @@
 "use client";
+import { validateEmail } from "@/lib/security";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { toast } from "sonner";
 import PresentationalSubscriptionFrom from "./PresentationalSubscriptionFrom";
 const Page = () => {
@@ -35,8 +36,10 @@ const Page = () => {
     },
   });
   const HandleNewsLetterEmail = () => {
-    const email = NewsLetterEmail.current?.value;
-    if (email) subscribeMutation.mutate(email);
+    const email = NewsLetterEmail.current!.value;
+    const cleanEmail = validateEmail(email);
+    if (cleanEmail) subscribeMutation.mutate(email);
+    else toast.warning("يرجى إدخال بريد إلكتروني صالح");
   };
   return (
     <PresentationalSubscriptionFrom
