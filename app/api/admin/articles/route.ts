@@ -67,15 +67,22 @@ export async function POST(req: NextRequest) {
         { status: 500 }
       );
     }
-    await coll.insertOne({
+    const article = {
       title,
       slug,
       description,
       tag,
-      createdAt,
+      createdAt: new Date(createdAt),
       banner,
       SubscribersNotified
-    });
+    }
+    const result = await coll.insertOne(article);
+    // await BackupArticles({
+    //   event_type: "article.created", client_payload: {
+    //     _id: result.insertedId.toString(),
+    //     ...article
+    //   }
+    // });
     return NextResponse.json(
       { message: "تمت إضافة المقالة بنجاح" },
       { status: 201 }
