@@ -1,4 +1,5 @@
 import IsAdmin from "@/hooks/IsAdmin";
+import cloudinary from "@/lib/cloudinary";
 import { getColl } from "@/lib/mongodb";
 import { generalRateLimiter } from "@/lib/rateLimiter";
 import {
@@ -7,6 +8,8 @@ import {
   sanitizeInput,
   validateSlug
 } from "@/lib/security";
+import { ArticleTY } from "@/types/Articles";
+import { ObjectId } from "mongodb";
 import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   const session = await IsAdmin();
@@ -70,20 +73,24 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: "غير مسموح" }, { status: 401 });
   }
   try {
-    // const { updated, _id, deletedImageIdsOfBlocks }: { updated: ArticleTY, _id: string; deletedImageIdsOfBlocks: string[] } = await request.json()
-    // const blocks = (updated.blocks || []).map((block: ArticleBlock) => ({
+    const { updatedArticle, deleteBlocksImageByIds }: { updatedArticle: ArticleTY; deleteBlocksImageByIds?: string[] } = await request.json()
+    // const blocks = (updatedArticle.blocks || []).map((block: ArticleBlock) => ({
     //   ...block,
     //   id: block.id ?? new ObjectId(),
     // }))
-    // const updatedArticle = {
-    //   ...updated,
-    //   blocks
-    // }
-    // const coll = await getColl({ dbName: "articles-database", collectionName: "articles-list" });
-    // await coll.updateOne({ _id: new ObjectId(_id) },
-    //   { $set: updatedArticle });
-    // const deletedImages = deletedImageIdsOfBlocks.length > 0 && await cloudinary.api.delete_resources(deletedImageIdsOfBlocks)
-    // return NextResponse.json({ updatedArticle, deletedImages });
+    const { _id, ...safeArticle } = updatedArticle;
+    const ArticleWithBlocks = {
+      ...safeArticle,
+      createdAt: new Date(updatedArticle.createdAt),
+      // blocks
+    }
+    const coll = await getColl({ dbName: "articles-database", collectionName: "articles-list" });
+    await coll.updateOne({ _id: new ObjectId(_id) },
+      { $set: ArticleWithBlocks });
+    if (deleteBlocksImageByIds && deleteBlocksImageByIds.length > 0) {
+      await cloudinary.api.delete_resources(deleteBlocksImageByIds)
+    }
+    return NextResponse.json(updatedArticle);
   } catch (error) {
     console.error("Article API Error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

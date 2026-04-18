@@ -36,12 +36,19 @@ const CreateArticle = () => {
     const image = await HandleUploadImage({
       file: data.banner as File,
     });
+    const utcMidnight = new Date(
+      Date.UTC(
+        new Date(data.createdAt as string).getUTCFullYear(),
+        new Date(data.createdAt as string).getUTCMonth(),
+        new Date(data.createdAt as string).getUTCDate(),
+      ),
+    );
     const articleData: ArticleTY = {
       slug: data.slug as string,
       title: data.title as string,
       tag: data.tag as string,
       description: data.description as string,
-      createdAt: new Date(data.createdAt as string),
+      createdAt: utcMidnight,
       SubscribersNotified: false,
       banner: {
         url: image!.secure_url,

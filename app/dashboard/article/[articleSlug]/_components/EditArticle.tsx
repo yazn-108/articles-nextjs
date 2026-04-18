@@ -1,6 +1,7 @@
 "use client";
 import Calendar from "@/app/dashboard/_components/Calendar";
 import { Input, Textarea } from "@/app/dashboard/_components/FormElements";
+import HandleUploadImage from "@/hooks/HandleUploadImage";
 import { ArticleTY } from "@/types/Articles";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
@@ -12,8 +13,13 @@ const EditArticle = ({ article }: { article: ArticleTY }) => {
   const [newArticleLoader, setNewArticleLoader] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const EditArticleInfo = useMutation({
-    mutationFn: (data: ArticleTY) =>
-      axios.put(`/api/admin/articles`, data).then((res) => res.data),
+    mutationFn: (data: {
+      updatedArticle: ArticleTY;
+      deleteBlocksImageByIds?: string[];
+    }) =>
+      axios
+        .put(`/api/admin/articles/${article.slug}`, data)
+        .then((res) => res.data),
     onSuccess: (res) => {
       toast.success(res.message);
       setNewArticleLoader(false);
@@ -32,51 +38,58 @@ const EditArticle = ({ article }: { article: ArticleTY }) => {
     const form = e.currentTarget;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
-    // const banner = data.banner as File;
-    // const image =
-    //   banner.size > 0
-    //     ? await HandleUploadImage({
-    //         file: banner,
-    //         public_id: article.banner.alt,
-    //       })
-    //     : null;
-    // const articleData: ArticleTY = {
-    //   ...article,
-    //   slug: (data.slug as string) ?? article.slug,
-    //   title: (data.title as string) ?? article.title,
-    //   tag: (data.tag as string) ?? article.tag,
-    //   description: (data.description as string) ?? article.description,
-    //   createdAt: new Date(data.createdAt as string),
-    //   SubscribersNotified: data["subscribers-notified"] === "on",
-    //   banner: {
-    //     url: image?.secure_url ?? article.banner.url,
-    //     public_id: image?.public_id ?? article.banner.public_id,
-    //     alt: (data["banner-description"] as string) ?? article.banner.alt,
-    //   },
-    // };
-    const x = {
-      blocks: article.blocks?.map((block, index) => {
-        const blockImage = data[`blocks[${index}].image`] as File;
-        return {
-          // ...block,
-          // title: (data[`blocks[${index}].title`] as string) ?? block.title,
-          // content:
-          //   (data[`blocks[${index}].content`] as string) ?? block.content,
-          image:
-            blockImage && blockImage.size > 0
-              ? {
-                  url: URL.createObjectURL(blockImage),
-                  public_id: `${article.slug}-block-${index}`,
-                  alt:
-                    (data[`blocks[${index}].image-description`] as string) ??
-                    block.image?.alt ??
-                    "",
-                }
-              : (block.image ?? null),
-        };
-      }),
+    const bannerFile = data.banner as File;
+    const image =
+      bannerFile.size > 0
+        ? await HandleUploadImage({
+            file: bannerFile,
+            public_id: article.banner.alt,
+          })
+        : null;
+    const utcMidnight = new Date(
+      Date.UTC(
+        new Date(data.createdAt as string).getUTCFullYear(),
+        new Date(data.createdAt as string).getUTCMonth(),
+        new Date(data.createdAt as string).getUTCDate(),
+      ),
+    );
+    const articleData: ArticleTY = {
+      ...article,
+      slug: (data.slug as string) ?? article.slug,
+      title: (data.title as string) ?? article.title,
+      tag: (data.tag as string) ?? article.tag,
+      description: (data.description as string) ?? article.description,
+      createdAt: utcMidnight,
+      SubscribersNotified: data["subscribers-notified"] === "on",
+      banner: {
+        url: image?.secure_url ?? article.banner.url,
+        public_id: image?.public_id ?? article.banner.public_id,
+        alt: (data["banner-description"] as string) ?? article.banner.alt,
+      },
     };
-    console.log(x.blocks);
+    // const x = {
+    //   blocks: article.blocks?.map((block, index) => {
+    //     const blockImage = data[`blocks[${index}].image`] as File;
+    //     return {
+    //       // ...block,
+    //       // title: (data[`blocks[${index}].title`] as string) ?? block.title,
+    //       // content:
+    //       //   (data[`blocks[${index}].content`] as string) ?? block.content,
+    //       image:
+    //         blockImage && blockImage.size > 0
+    //           ? {
+    //               url: URL.createObjectURL(blockImage),
+    //               public_id: `${article.slug}-block-${index}`,
+    //               alt:
+    //                 (data[`blocks[${index}].image-description`] as string) ??
+    //                 block.image?.alt ??
+    //                 "",
+    //             }
+    //           : (block.image ?? null),
+    //     };
+    //   }),
+    // };
+    // console.log(x.blocks);
     //
     // Handle blocks as needed, this is a simplified example
     // blocks: article.blocks?.map((block, index) => {
@@ -104,13 +117,16 @@ const EditArticle = ({ article }: { article: ArticleTY }) => {
     //   };
     // }),
     //
-    // if (JSON.stringify(articleData) !== JSON.stringify(article)) {
-    //   EditArticleInfo.mutate(articleData);
-    //   // setIsOpen(false);
-    // } else {
-    //   toast.warning("لم يتم إجراء أي تغييرات على المقالة");
-    //   setNewArticleLoader(false);
-    // }
+    if (JSON.stringify(articleData) !== JSON.stringify(article)) {
+      EditArticleInfo.mutate({
+        updatedArticle: articleData,
+        deleteBlocksImageByIds: [],
+      });
+      setIsOpen(false);
+    } else {
+      toast.warning("لم يتم إجراء أي تغييرات على المقالة");
+      setNewArticleLoader(false);
+    }
   };
   return (
     <div>
@@ -164,7 +180,10 @@ const EditArticle = ({ article }: { article: ArticleTY }) => {
                     className="h-24"
                     defaultValue={article.description}
                   />
-                  <Calendar name="createdAt" />
+                  <Calendar
+                    name="createdAt"
+                    date={new Date(article.createdAt)}
+                  />
                   <Input name="banner" type="file" />
                   <Input
                     name="banner-description"
