@@ -1,6 +1,6 @@
 "use client";
 import GoBackToHome from "@/app/_components/GoBackToHome";
-import { ArticleDetailsResponse } from "@/types/ArticleDetails";
+import { ArticleTY } from "@/types/Articles";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import dynamic from "next/dynamic";
@@ -19,11 +19,7 @@ const BlockImage = dynamic(() => import("./_components/BlockImage"), {
     <div className="w-full aspect-video rounded-2xl bg-gray-600 animate-pulse" />
   ),
 });
-const PresentationalArticleDetails = ({
-  article,
-}: {
-  article: ArticleDetailsResponse;
-}) => {
+const PresentationalArticleDetails = ({ article }: { article: ArticleTY }) => {
   const [formattedCodeBlocks, setFormattedCodeBlocks] = useState<
     Record<string, string>
   >({});

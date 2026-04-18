@@ -63,22 +63,33 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-// export async function PUT(request: Request) {
-//   const { updated, _id, deletedImageIdsOfBlocks }: { updated: ArticleTY, _id: string; deletedImageIdsOfBlocks: string[] } = await request.json()
-//   const blocks = (updated.blocks || []).map((block: ArticleBlockTY) => ({
-//     ...block,
-//     id: block.id ?? new ObjectId(),
-//   }))
-//   const updatedArticle = {
-//     ...updated,
-//     blocks
-//   }
-//   const coll = await getColl({ dbName: "articles-database", collectionName: "articles-list" });
-//   await coll.updateOne({ _id: new ObjectId(_id) },
-//     { $set: updatedArticle });
-//   const deletedImages = deletedImageIdsOfBlocks.length > 0 && await cloudinary.api.delete_resources(deletedImageIdsOfBlocks)
-//   return NextResponse.json({ updatedArticle, deletedImages });
-// }
+// ////////////////////////////////////////////////
+export async function PUT(request: Request) {
+  const session = await IsAdmin();
+  if (!session) {
+    return NextResponse.json({ error: "غير مسموح" }, { status: 401 });
+  }
+  try {
+    // const { updated, _id, deletedImageIdsOfBlocks }: { updated: ArticleTY, _id: string; deletedImageIdsOfBlocks: string[] } = await request.json()
+    // const blocks = (updated.blocks || []).map((block: ArticleBlock) => ({
+    //   ...block,
+    //   id: block.id ?? new ObjectId(),
+    // }))
+    // const updatedArticle = {
+    //   ...updated,
+    //   blocks
+    // }
+    // const coll = await getColl({ dbName: "articles-database", collectionName: "articles-list" });
+    // await coll.updateOne({ _id: new ObjectId(_id) },
+    //   { $set: updatedArticle });
+    // const deletedImages = deletedImageIdsOfBlocks.length > 0 && await cloudinary.api.delete_resources(deletedImageIdsOfBlocks)
+    // return NextResponse.json({ updatedArticle, deletedImages });
+  } catch (error) {
+    console.error("Article API Error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
+// ///////////////////////////////////////////////
 // export async function DELETE(request: Request) {
 //   const { _id, public_ids_of_images }: { _id: string; public_ids_of_images: string[] } = await request.json()
 //   const coll = await getColl({ dbName: "articles-database", collectionName: "articles-list" });

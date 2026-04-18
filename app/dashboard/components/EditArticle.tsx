@@ -1,5 +1,5 @@
 "use client";
-import { ArticleDetailsResponse } from "@/types/ArticleDetails";
+import { ArticleTY } from "@/types/Articles";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { Activity, useState } from "react";
@@ -7,12 +7,12 @@ import { createPortal } from "react-dom";
 import { toast } from "sonner";
 import { Input, Textarea } from "./FormElements";
 import Calendar from "./calendar";
-const EditArticle = ({ article }: { article: ArticleDetailsResponse }) => {
+const EditArticle = ({ article }: { article: ArticleTY }) => {
   const [IsOpen, setIsOpen] = useState<boolean>(false);
   const [newArticleLoader, setNewArticleLoader] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const EditArticleInfo = useMutation({
-    mutationFn: (data: ArticleDetailsResponse) =>
+    mutationFn: (data: ArticleTY) =>
       axios.put(`/api/admin/articles`, data).then((res) => res.data),
     onSuccess: (res) => {
       toast.success(res.message);
@@ -40,7 +40,7 @@ const EditArticle = ({ article }: { article: ArticleDetailsResponse }) => {
     //         public_id: article.banner.alt,
     //       })
     //     : null;
-    // const articleData: ArticleDetailsResponse = {
+    // const articleData: ArticleTY = {
     //   ...article,
     //   slug: (data.slug as string) ?? article.slug,
     //   title: (data.title as string) ?? article.title,

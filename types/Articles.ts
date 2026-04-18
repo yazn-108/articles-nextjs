@@ -1,13 +1,33 @@
-import { ImageType } from "./ArticleDetails";
+export type ImageType = {
+  url: string;
+  public_id: string;
+  alt: string;
+};
+type CodeBlock = {
+  language?: string;
+  content?: string;
+};
+export type ArticleBlock = {
+  id: string;
+  title: string | null;
+  content?: string | null;
+  code?: CodeBlock | null;
+  image?: ImageType | null;
+  link: {
+    url: string;
+    title: string;
+  };
+};
 export type ArticleTY = {
   _id?: string;
-  SubscribersNotified: false,
+  SubscribersNotified: boolean;
   slug: string;
   title: string;
   banner: ImageType;
   tag: string;
   createdAt: Date;
   description: string;
+  blocks?: ArticleBlock[];
 };
 export type ArticlesResponse = {
   articles: ArticleTY[];
