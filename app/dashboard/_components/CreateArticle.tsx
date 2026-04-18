@@ -6,7 +6,7 @@ import axios, { AxiosError } from "axios";
 import { Activity, useState } from "react";
 import { createPortal } from "react-dom";
 import { toast } from "sonner";
-import Calendar from "./calendar";
+import Calendar from "./Calendar";
 import { Input, Textarea } from "./FormElements";
 const CreateArticle = () => {
   const [IsOpen, setIsOpen] = useState<boolean>(false);

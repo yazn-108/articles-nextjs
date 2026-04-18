@@ -1,7 +1,7 @@
 "use client";
 import Articles from "../_Articles/Articles";
-import AuthButton from "./components/AuthButton";
-import CreateArticle from "./components/CreateArticle";
+import AuthButton from "./_components/AuthButton";
+import CreateArticle from "./_components/CreateArticle";
 const Page = () => {
   return (
     <div>

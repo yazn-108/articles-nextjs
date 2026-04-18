@@ -1,12 +1,12 @@
 "use client";
+import Calendar from "@/app/dashboard/_components/Calendar";
+import { Input, Textarea } from "@/app/dashboard/_components/FormElements";
 import { ArticleTY } from "@/types/Articles";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { Activity, useState } from "react";
 import { createPortal } from "react-dom";
 import { toast } from "sonner";
-import { Input, Textarea } from "./FormElements";
-import Calendar from "./calendar";
 const EditArticle = ({ article }: { article: ArticleTY }) => {
   const [IsOpen, setIsOpen] = useState<boolean>(false);
   const [newArticleLoader, setNewArticleLoader] = useState<boolean>(false);

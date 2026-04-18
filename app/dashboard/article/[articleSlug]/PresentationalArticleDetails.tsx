@@ -6,7 +6,7 @@ import axios from "axios";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import EditArticle from "../../components/EditArticle";
+import EditArticle from "./_components/EditArticle";
 const ArticleImage = dynamic(() => import("./_components/ArticleImage"), {
   ssr: false,
   loading: () => (
