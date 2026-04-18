@@ -1,13 +1,13 @@
-import { NextResponse } from "next/server";
 import { getColl } from "@/lib/mongodb";
-import {
-  sanitizeSearchQuery,
-  validateSearchQuery,
-  logSuspiciousActivity,
-  createSafeRegexQuery
-} from "@/lib/security";
 import { searchRateLimiter } from "@/lib/rateLimiter";
-export const GET = async (request: Request) => {
+import {
+  createSafeRegexQuery,
+  logSuspiciousActivity,
+  sanitizeSearchQuery,
+  validateSearchQuery
+} from "@/lib/security";
+import { NextRequest, NextResponse } from "next/server";
+export const GET = async (request: NextRequest) => {
   try {
     // Rate Limiting
     const rateLimitResult = searchRateLimiter(request);

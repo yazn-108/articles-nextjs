@@ -7,8 +7,8 @@ import {
   sanitizeInput,
   validateSlug
 } from "@/lib/security";
-import { NextResponse } from "next/server";
-export async function GET(request: Request) {
+import { NextRequest, NextResponse } from "next/server";
+export async function GET(request: NextRequest) {
   const session = await IsAdmin();
   if (!session) {
     return NextResponse.json({ error: "غير مسموح" }, { status: 401 });
@@ -64,7 +64,7 @@ export async function GET(request: Request) {
   }
 }
 // ////////////////////////////////////////////////
-export async function PUT(request: Request) {
+export async function PUT(request: NextRequest) {
   const session = await IsAdmin();
   if (!session) {
     return NextResponse.json({ error: "غير مسموح" }, { status: 401 });
@@ -90,7 +90,7 @@ export async function PUT(request: Request) {
   }
 }
 // ///////////////////////////////////////////////
-// export async function DELETE(request: Request) {
+// export async function DELETE(request: NextRequest) {
 //   const { _id, public_ids_of_images }: { _id: string; public_ids_of_images: string[] } = await request.json()
 //   const coll = await getColl({ dbName: "articles-database", collectionName: "articles-list" });
 //   const article = await coll.deleteOne({ _id: new ObjectId(_id) });

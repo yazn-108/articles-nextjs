@@ -1,14 +1,14 @@
 import { getColl } from '@/lib/mongodb';
-import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
-import { randomBytes } from 'crypto';
-import { promisify } from 'util';
-import {
-  validateEmail,
-  logSuspiciousActivity
-} from '@/lib/security';
 import { generalRateLimiter } from '@/lib/rateLimiter';
-export const POST = async (request: Request) => {
+import {
+  logSuspiciousActivity,
+  validateEmail
+} from '@/lib/security';
+import { randomBytes } from 'crypto';
+import { NextRequest, NextResponse } from 'next/server';
+import nodemailer from 'nodemailer';
+import { promisify } from 'util';
+export const POST = async (request: NextRequest) => {
   try {
     // Rate Limiting
     const rateLimitResult = generalRateLimiter(request);

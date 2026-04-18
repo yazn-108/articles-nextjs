@@ -6,8 +6,8 @@ import {
   sanitizeInput,
   validateSlug
 } from "@/lib/security";
-import { NextResponse } from "next/server";
-export async function GET(request: Request) {
+import { NextRequest, NextResponse } from "next/server";
+export async function GET(request: NextRequest) {
   try {
     // Rate Limiting
     const rateLimitResult = generalRateLimiter(request);

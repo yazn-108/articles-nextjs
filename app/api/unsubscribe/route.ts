@@ -1,12 +1,12 @@
 import { getColl } from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
-import { NextResponse } from "next/server";
-import {
-  sanitizeText,
-  logSuspiciousActivity
-} from "@/lib/security";
 import { generalRateLimiter } from "@/lib/rateLimiter";
-export const POST = async (request: Request) => {
+import {
+  logSuspiciousActivity,
+  sanitizeText
+} from "@/lib/security";
+import { ObjectId } from "mongodb";
+import { NextRequest, NextResponse } from "next/server";
+export const POST = async (request: NextRequest) => {
   try {
     // Rate Limiting
     const rateLimitResult = generalRateLimiter(request);

@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { codeToHtml } from "shiki";
-export const POST = async (req: Request) => {
+export const POST = async (req: NextRequest) => {
   try {
     const { code, lang } = await req.json();
     const html = await codeToHtml(code, { lang, theme: "github-dark" });

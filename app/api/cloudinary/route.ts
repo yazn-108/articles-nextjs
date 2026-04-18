@@ -1,7 +1,7 @@
 import IsAdmin from "@/hooks/IsAdmin";
 import cloudinary from "@/lib/cloudinary";
-import { NextResponse } from "next/server";
-export async function POST(req: Request) {
+import { NextRequest, NextResponse } from "next/server";
+export async function POST(req: NextRequest) {
   const session = await IsAdmin();
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

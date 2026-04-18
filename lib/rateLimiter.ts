@@ -1,3 +1,4 @@
+import { NextRequest } from "next/server";
 /**
  * Rate Limiting Library to Prevent Attacks
  */
@@ -46,7 +47,7 @@ export const getRateLimitStatus = () => {
   return status;
 };
 // Get the client IP
-export const getClientIP = (req: Request): string => {
+export const getClientIP = (req: NextRequest): string => {
   return req.headers.get('x-forwarded-for')?.split(',')[0] ||
     req.headers.get('x-real-ip') ||
     'unknown';
@@ -58,7 +59,7 @@ export const rateLimiter = (options: {
   message?: string;
 }) => {
   const { windowMs, maxRequests, message = 'Too many requests' } = options;
-  return (req: Request): { allowed: boolean; message?: string; retryAfter?: number } => {
+  return (req: NextRequest): { allowed: boolean; message?: string; retryAfter?: number } => {
     const clientIP = getClientIP(req);
     const now = Date.now();
     const key = `${clientIP}:${Math.floor(now / windowMs)}`;

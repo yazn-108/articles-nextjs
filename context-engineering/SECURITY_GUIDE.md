@@ -33,7 +33,6 @@ export const sanitizeSearchQuery = (query: string): string => {
     .trim()
     .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
     .replace(/[<>{}'"]/g, "");
-
   return cleaned.substring(0, 100); // تحديد طول معقول
 };
 ```
@@ -48,7 +47,6 @@ export const createSafeQuery = (field: string, value: string) => {
   const sanitizedValue = sanitizeInput(value);
   return { [field]: { $eq: sanitizedValue } };
 };
-
 // إنشاء استعلام regex آمن
 export const createSafeRegexQuery = (field: string, value: string) => {
   const sanitizedValue = sanitizeSearchQuery(value);
@@ -103,7 +101,6 @@ export const searchRateLimiter = rateLimiter({
   maxRequests: 10, // 10 طلبات في الدقيقة
   message: "تم تجاوز حد طلبات البحث، حاول مرة أخرى لاحقاً",
 });
-
 // Rate Limiter للاتصال
 export const contactRateLimiter = rateLimiter({
   windowMs: 5 * 60 * 1000, // 5 دقائق
@@ -116,7 +113,7 @@ export const contactRateLimiter = rateLimiter({
 
 ```typescript
 // الحصول على IP العميل
-export const getClientIP = (req: Request): string => {
+export const getClientIP = (req: NextRequest): string => {
   return (
     req.headers.get("x-forwarded-for")?.split(",")[0] ||
     req.headers.get("x-real-ip") ||
@@ -164,7 +161,7 @@ export const validateTag = (tag: string): boolean => {
 export const logSuspiciousActivity = (
   req: Request,
   query: string,
-  endpoint: string
+  endpoint: string,
 ) => {
   const suspiciousPatterns = [
     "$",
@@ -177,9 +174,8 @@ export const logSuspiciousActivity = (
     "where",
   ];
   const hasSuspiciousPattern = suspiciousPatterns.some((pattern) =>
-    query.toLowerCase().includes(pattern)
+    query.toLowerCase().includes(pattern),
   );
-
   if (hasSuspiciousPattern) {
     console.warn(`🚨 Suspicious activity detected:`, {
       endpoint,
@@ -254,8 +250,7 @@ export interface SecurityMetrics {
 - Rate limiting (10 requests/minute)
 - Suspicious activity logging
 - Query validation
-
-**Example Attack Prevention:**
+  **Example Attack Prevention:**
 
 ```
 ❌ /api/search/.*|.*
@@ -271,8 +266,7 @@ export interface SecurityMetrics {
 - Input sanitization
 - Rate limiting
 - Safe query creation
-
-**Example Attack Prevention:**
+  **Example Attack Prevention:**
 
 ```
 ❌ /api/articles/{"$ne": null}
@@ -314,7 +308,6 @@ export interface SecurityMetrics {
 ```typescript
 // ❌ خطأ
 const article = await coll.findOne({ slug: rawSlug });
-
 // ✅ صحيح
 const cleanSlug = sanitizeInput(rawSlug);
 const article = await coll.findOne(createSafeQuery("slug", cleanSlug));
@@ -325,14 +318,13 @@ const article = await coll.findOne(createSafeQuery("slug", cleanSlug));
 ```typescript
 // ❌ خطأ
 const results = await collection.find({ title: { $regex: query } });
-
 // ✅ صحيح
 if (!validateSearchQuery(query)) {
   return NextResponse.json({ error: "Invalid query" }, { status: 400 });
 }
 const cleanQuery = sanitizeSearchQuery(query);
 const results = await collection.find(
-  createSafeRegexQuery("title", cleanQuery)
+  createSafeRegexQuery("title", cleanQuery),
 );
 ```
 
@@ -340,17 +332,16 @@ const results = await collection.find(
 
 ```typescript
 // ❌ خطأ
-export const GET = async (request: Request) => {
+export const GET = async (request: NextRequest) => {
   // معالجة مباشرة بدون rate limiting
 };
-
 // ✅ صحيح
-export const GET = async (request: Request) => {
+export const GET = async (request: NextRequest) => {
   const rateLimitResult = searchRateLimiter(request);
   if (!rateLimitResult.allowed) {
     return NextResponse.json(
       { error: rateLimitResult.message },
-      { status: 429 }
+      { status: 429 },
     );
   }
   // معالجة الطلب
@@ -362,7 +353,6 @@ export const GET = async (request: Request) => {
 ```typescript
 // ❌ خطأ
 const results = await collection.find({ title: { $regex: query } });
-
 // ✅ صحيح
 logSuspiciousActivity(request, query, "/api/search");
 const results = await collection.find(createSafeRegexQuery("title", query));
@@ -408,7 +398,6 @@ suspiciousIPs.forEach(({ ip, count }) => {
 ```typescript
 // ❌ عرضة للهجوم
 const user = await collection.findOne({ email: req.body.email });
-
 // ✅ محمي
 const cleanEmail = sanitizeInput(req.body.email);
 const user = await collection.findOne(createSafeQuery("email", cleanEmail));
@@ -419,7 +408,6 @@ const user = await collection.findOne(createSafeQuery("email", cleanEmail));
 ```typescript
 // ❌ عرضة للهجوم
 <div dangerouslySetInnerHTML={{ __html: userInput }} />
-
 // ✅ محمي
 <div>{sanitizeHTML(userInput)}</div>
 ```
@@ -431,14 +419,13 @@ const user = await collection.findOne(createSafeQuery("email", cleanEmail));
 app.get("/api/search", (req, res) => {
   // معالجة مباشرة
 });
-
 // ✅ محمي
 app.get(
   "/api/search",
   rateLimiter({ windowMs: 60000, max: 10 }),
   (req, res) => {
     // معالجة محمية
-  }
+  },
 );
 ```
 

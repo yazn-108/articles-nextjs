@@ -1,14 +1,14 @@
-import { NextResponse } from "next/server";
+import { contactRateLimiter } from "@/lib/rateLimiter";
+import {
+  logSuspiciousActivity,
+  sanitizeHTML,
+  sanitizeText,
+  validateEmail
+} from "@/lib/security";
+import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { promisify } from "util";
-import {
-  sanitizeText,
-  sanitizeHTML,
-  validateEmail,
-  logSuspiciousActivity
-} from "@/lib/security";
-import { contactRateLimiter } from "@/lib/rateLimiter";
-export const POST = async (req: Request) => {
+export const POST = async (req: NextRequest) => {
   try {
     // Rate Limiting
     const rateLimitResult = contactRateLimiter(req);

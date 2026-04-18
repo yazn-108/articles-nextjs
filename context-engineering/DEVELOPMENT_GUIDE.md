@@ -37,10 +37,8 @@
 # استنساخ المستودع
 git clone https://github.com/yourusername/articles-nextjs.git
 cd articles-nextjs
-
 # تثبيت التبعيات
 npm install
-
 # إعداد متغيرات البيئة
 cp .env.example .env.local
 ```
@@ -50,10 +48,8 @@ cp .env.example .env.local
 ```bash
 # تشغيل MongoDB محلياً
 mongod --dbpath /path/to/your/db
-
 # أو استخدام Docker
 docker run -d -p 27017:27017 --name mongodb mongo:latest
-
 # إنشاء قاعدة البيانات
 mongo
 use articles-database
@@ -64,7 +60,6 @@ use articles-database
 ```bash
 # وضع التطوير
 npm run dev
-
 # فتح المتصفح
 open http://localhost:3000
 ```
@@ -144,7 +139,6 @@ interface Article {
   };
   blocks: ArticleBlock[];
 }
-
 interface ArticleBlock {
   id: string;
   title: string;
@@ -159,12 +153,10 @@ interface ArticleBlock {
     alt: string;
   } | null;
 }
-
 // ❌ خطأ - استخدام any
 function processArticle(article: any) {
   // ...
 }
-
 // ✅ صحيح - استخدام types محددة
 function processArticle(article: Article) {
   // ...
@@ -179,7 +171,6 @@ interface ArticleCardProps {
   article: Article;
   onLike: (id: string) => void;
 }
-
 export const ArticleCard: React.FC<ArticleCardProps> = ({
   article,
   onLike,
@@ -197,7 +188,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
 
 ```typescript
 // ✅ صحيح - استخدام try-catch و error handling
-export const GET = async (request: Request) => {
+export const GET = async (request: NextRequest) => {
   try {
     // معالجة الطلب
     const data = await processRequest(request);
@@ -206,7 +197,7 @@ export const GET = async (request: Request) => {
     console.error("API Error:", error);
     return NextResponse.json(
       { success: false, message: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 };
@@ -218,11 +209,9 @@ export const GET = async (request: Request) => {
 // ✅ صحيح - تنظيف المدخلات
 const cleanInput = sanitizeInput(userInput);
 const isValid = validateInput(cleanInput, "search");
-
 if (!isValid) {
   return NextResponse.json({ error: "Invalid input" }, { status: 400 });
 }
-
 // ✅ صحيح - استخدام استعلامات آمنة
 const results = await collection.find(createSafeQuery("title", cleanInput));
 ```
@@ -234,14 +223,12 @@ const results = await collection.find(createSafeQuery("title", cleanInput));
 ```typescript
 // tests/security.test.ts
 import { sanitizeInput, validateEmail } from "../lib/security";
-
 describe("Security Functions", () => {
   test("should sanitize input correctly", () => {
     const input = '<script>alert("xss")</script>';
     const result = sanitizeInput(input);
     expect(result).toBe('alert("xss")');
   });
-
   test("should validate email correctly", () => {
     expect(validateEmail("test@example.com")).toBe(true);
     expect(validateEmail("invalid-email")).toBe(false);
@@ -254,13 +241,11 @@ describe("Security Functions", () => {
 ```typescript
 // tests/api.test.ts
 import { GET } from "../app/api/articles/route";
-
 describe("Articles API", () => {
   test("should return articles list", async () => {
     const request = new Request("http://localhost:3000/api/articles");
     const response = await GET(request);
     const data = await response.json();
-
     expect(response.status).toBe(200);
     expect(data.articles).toBeDefined();
   });
@@ -272,7 +257,6 @@ describe("Articles API", () => {
 ```typescript
 // tests/e2e.test.ts
 import { test, expect } from "@playwright/test";
-
 test("should display articles on homepage", async ({ page }) => {
   await page.goto("http://localhost:3000");
   await expect(page.locator("h1")).toBeVisible();
@@ -321,17 +305,13 @@ test("should display articles on homepage", async ({ page }) => {
 ```bash
 # تثبيت تبعية جديدة
 npm install package-name
-
 # تثبيت تبعية تطوير
 npm install -D package-name
-
 # تحديث التبعيات
 npm update
-
 # فحص الثغرات الأمنية
 npm audit
 npm audit fix
-
 # حذف تبعية
 npm uninstall package-name
 ```
@@ -343,10 +323,8 @@ npm uninstall package-name
 ```bash
 # إنشاء branch جديد
 git checkout -b feature/new-feature
-
 # أو
 git checkout -b bugfix/fix-issue
-
 # أو
 git checkout -b hotfix/critical-fix
 ```
@@ -358,7 +336,6 @@ git checkout -b hotfix/critical-fix
 git commit -m "feat: add article search functionality"
 git commit -m "fix: resolve NoSQL injection vulnerability"
 git commit -m "docs: update API documentation"
-
 # ❌ خطأ - رسائل غير واضحة
 git commit -m "fix"
 git commit -m "update"
@@ -398,10 +375,8 @@ git commit -m "changes"
 ```typescript
 // ✅ صحيح - استخدام console.log للتصحيح
 console.log("Processing request:", { url, method, headers });
-
 // ✅ صحيح - استخدام console.error للأخطاء
 console.error("Database error:", error);
-
 // ❌ خطأ - ترك console.log في الإنتاج
 console.log("Debug info"); // يجب حذفها قبل النشر
 ```
@@ -415,17 +390,15 @@ try {
   return NextResponse.json({ success: true, data: result });
 } catch (error) {
   console.error("Operation failed:", error);
-
   if (error instanceof ValidationError) {
     return NextResponse.json(
       { success: false, message: error.message },
-      { status: 400 }
+      { status: 400 },
     );
   }
-
   return NextResponse.json(
     { success: false, message: "Internal server error" },
-    { status: 500 }
+    { status: 500 },
   );
 }
 ```
@@ -438,10 +411,8 @@ function processData(data: any) {
   debugger; // توقف هنا في DevTools
   return data.map((item) => item.value);
 }
-
 // استخدام console.table للبيانات المعقدة
 console.table(articles);
-
 // استخدام console.group للتنظيم
 console.group("API Request");
 console.log("URL:", url);
@@ -465,15 +436,13 @@ const articles = await collection.find(
     description: 1,
     createdAt: 1,
     banner: 1,
-  } // فقط الحقول المطلوبة
+  }, // فقط الحقول المطلوبة
 );
-
 // ✅ صحيح - استخدام limit
 const recentArticles = await collection
   .find({})
   .sort({ createdAt: -1 })
   .limit(10);
-
 // ✅ صحيح - استخدام index
 // db.articles.createIndex({ "createdAt": -1 })
 ```
@@ -484,12 +453,10 @@ const recentArticles = await collection
 // ✅ صحيح - استخدام cache
 const cacheKey = `article:${slug}`;
 let article = await redis.get(cacheKey);
-
 if (!article) {
   article = await db.articles.findOne({ slug });
   await redis.setex(cacheKey, 3600, JSON.stringify(article));
 }
-
 return JSON.parse(article);
 ```
 
@@ -498,7 +465,6 @@ return JSON.parse(article);
 ```typescript
 // ✅ صحيح - lazy loading للمكونات
 const ArticleModal = lazy(() => import("./ArticleModal"));
-
 // استخدام Suspense
 <Suspense fallback={<div>Loading...</div>}>
   <ArticleModal />
@@ -514,7 +480,6 @@ const ArticleModal = lazy(() => import("./ArticleModal"));
 if (!validateEmail(email)) {
   return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
 }
-
 // ✅ صحيح - تنظيف المدخلات
 const cleanInput = sanitizeInput(userInput);
 ```
@@ -560,7 +525,6 @@ console.error("Database connection failed:", error);
 const startTime = Date.now();
 const result = await processRequest();
 const duration = Date.now() - startTime;
-
 if (duration > 1000) {
   console.warn("Slow request:", { duration, endpoint });
 }
