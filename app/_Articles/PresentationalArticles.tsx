@@ -1,6 +1,7 @@
 import { PresentationalArticlesProps } from "@/types/Articles";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 import ArticlesState from "./_components/ArticlesState";
 const ArticleImage = dynamic(() => import("./_components/ArticleImage"), {
@@ -17,6 +18,7 @@ const PresentationalArticles: React.FC<PresentationalArticlesProps> = ({
   inViewRef,
   admin,
 }) => {
+  const router = useRouter();
   return (
     <>
       {isLoading && (
@@ -43,6 +45,7 @@ const PresentationalArticles: React.FC<PresentationalArticlesProps> = ({
                   ? `/article/${article.slug}`
                   : `/dashboard/article/${article.slug}`
               }
+              onMouseEnter={() => router.prefetch(`/article/${article.slug}`)}
               className="block"
             >
               <ArticleImage banner={article.banner} i={i} />
