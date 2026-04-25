@@ -66,7 +66,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-// ////////////////////////////////////////////////
 export async function PUT(request: NextRequest) {
   const session = await IsAdmin();
   if (!session) {
@@ -96,11 +95,22 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-// ///////////////////////////////////////////////
-// export async function DELETE(request: NextRequest) {
-//   const { _id, public_ids_of_images }: { _id: string; public_ids_of_images: string[] } = await request.json()
-//   const coll = await getColl({ dbName: "articles-database", collectionName: "articles-list" });
-//   const article = await coll.deleteOne({ _id: new ObjectId(_id) });
-//   const deletedImages = await cloudinary.api.delete_resources(public_ids_of_images)
-//   return NextResponse.json({ article, deletedImages });
-// }
+export async function DELETE(request: NextRequest) {
+  const session = await IsAdmin();
+  if (!session) {
+    return NextResponse.json({ error: "غير مسموح" }, { status: 401 });
+  }
+  try {
+    const { _id, public_ids_of_images }: { _id: string; public_ids_of_images: string[] } = await request.json()
+    const coll = await getColl({ dbName: "articles-database", collectionName: "articles-list" });
+    await coll.deleteOne({ _id: new ObjectId(_id) });
+    await cloudinary.api.delete_resources(public_ids_of_images)
+    // await BackupArticles({
+    //   event_type: "article.deleted", client_payload: { articleId: _id }
+    // });
+    return NextResponse.json({ message: "Article and associated images deleted successfully" });
+  } catch (error) {
+    console.error("Article API Error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}

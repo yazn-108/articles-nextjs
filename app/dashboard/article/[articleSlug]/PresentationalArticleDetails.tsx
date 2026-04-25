@@ -6,6 +6,7 @@ import axios from "axios";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import DeleteArticle from "./_components/DeleteArticle";
 import EditArticle from "./_components/EditArticle";
 const ArticleImage = dynamic(() => import("./_components/ArticleImage"), {
   ssr: false,
@@ -69,6 +70,7 @@ const PresentationalArticleDetails = ({ article }: { article: ArticleTY }) => {
           <GoBackToHome.BackToHomeIcon url="/dashboard" />
         </GoBackToHome>
         <EditArticle article={article} />
+        <DeleteArticle article={article} />
       </div>
       <header className="border-b border-primary pb-10 flex flex-col-reverse md:flex-row items-center gap-10">
         <div className="flex-1 md:max-w-[calc(100%-400px)]">
