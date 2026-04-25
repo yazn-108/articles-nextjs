@@ -13,6 +13,9 @@
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
 }
+html {
+  scroll-behavior: smooth;
+}
 body {
   background: var(--background);
   color: var(--foreground);
@@ -23,5 +26,5 @@ body {
   display: none; /* Chrome, Safari, Edge */
 }
 [data-sonner-toaster="true"] {
-  @apply !right-[-12px]  min-[600px]:!right-[24px];
+  @apply right-3! min-[600px]:right-6!;
 }
