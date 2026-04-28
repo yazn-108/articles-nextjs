@@ -2,16 +2,37 @@
 import Calendar from "@/app/dashboard/_components/Calendar";
 import { Input, Textarea } from "@/app/dashboard/_components/FormElements";
 import HandleUploadImage from "@/hooks/HandleUploadImage";
-import { ArticleTY } from "@/types/Articles";
+import { ArticleBlock, ArticleTY } from "@/types/Articles";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { Activity, useState } from "react";
 import { createPortal } from "react-dom";
 import { toast } from "sonner";
 const EditArticle = ({ article }: { article: ArticleTY }) => {
+  const queryClient = useQueryClient();
   const [IsOpen, setIsOpen] = useState<boolean>(false);
   const [newArticleLoader, setNewArticleLoader] = useState<boolean>(false);
-  const queryClient = useQueryClient();
+  const [articleBlocks, setArticleBlocks] = useState<ArticleBlock[]>(
+    article.blocks || ([] as ArticleBlock[]),
+  );
+  const moveBlock = ({
+    index,
+    direction,
+  }: {
+    index: number;
+    direction: "up" | "down";
+  }) => {
+    setArticleBlocks((prev) => {
+      const newBlocks = [...prev];
+      const targetIndex = direction === "up" ? index - 1 : index + 1;
+      if (targetIndex < 0 || targetIndex >= newBlocks.length) return prev;
+      [newBlocks[index], newBlocks[targetIndex]] = [
+        newBlocks[targetIndex],
+        newBlocks[index],
+      ];
+      return newBlocks;
+    });
+  };
   const EditArticleInfo = useMutation({
     mutationFn: (data: {
       updatedArticle: ArticleTY;
@@ -66,57 +87,8 @@ const EditArticle = ({ article }: { article: ArticleTY }) => {
         public_id: image?.public_id ?? article.banner.public_id,
         alt: (data["banner-description"] as string) ?? article.banner.alt,
       },
+      blocks: articleBlocks,
     };
-    // const x = {
-    //   blocks: article.blocks?.map((block, index) => {
-    //     const blockImage = data[`blocks[${index}].image`] as File;
-    //     return {
-    //       // ...block,
-    //       // title: (data[`blocks[${index}].title`] as string) ?? block.title,
-    //       // content:
-    //       //   (data[`blocks[${index}].content`] as string) ?? block.content,
-    //       image:
-    //         blockImage && blockImage.size > 0
-    //           ? {
-    //               url: URL.createObjectURL(blockImage),
-    //               public_id: `${article.slug}-block-${index}`,
-    //               alt:
-    //                 (data[`blocks[${index}].image-description`] as string) ??
-    //                 block.image?.alt ??
-    //                 "",
-    //             }
-    //           : (block.image ?? null),
-    //     };
-    //   }),
-    // };
-    // console.log(x.blocks);
-    //
-    // Handle blocks as needed, this is a simplified example
-    // blocks: article.blocks?.map((block, index) => {
-    //   const blockTitle = data[`blocks[${index}].title`] as string;
-    //   const blockContent = data[`blocks[${index}].content`] as string;
-    //   const blockImageFile = data[`blocks[${index}].image`] as File;
-    //   const blockImageDescription = data[
-    //     `blocks[${index}].image-description`
-    //   ] as string;
-    //   const blockImage =
-    //     blockImageFile.size > 0 &&
-    //     HandleUploadImage({
-    //       file: blockImageFile,
-    //       public_id: `${article.slug}-block-${index}`,
-    //     });
-    //   return {
-    //     ...block,
-    //     title: blockTitle,
-    //     content: blockContent,
-    //     image: {
-    //       url: blockImage?.secure_url ?? block.image?.url,
-    //       public_id: blockImage?.public_id ?? block.image?.public_id,
-    //       alt: blockImageDescription ?? block.image?.alt,
-    //     },
-    //   };
-    // }),
-    //
     if (JSON.stringify(articleData) !== JSON.stringify(article)) {
       EditArticleInfo.mutate({
         updatedArticle: articleData,
@@ -150,7 +122,10 @@ const EditArticle = ({ article }: { article: ArticleTY }) => {
               >
                 <button
                   type="button"
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => {
+                    setIsOpen(false);
+                    setArticleBlocks(article.blocks || ([] as ArticleBlock[]));
+                  }}
                   className="px-4 py-2 rounded-md bg-primary cursor-pointer w-fit"
                 >
                   x
@@ -207,47 +182,108 @@ const EditArticle = ({ article }: { article: ArticleTY }) => {
                     </label>
                   </div>
                   <div>
-                    {/* title: string | null;
-                      content?: string | null;
-                      code?: CodeBlock | null;
-                      image?: ImageType | null;
-                      link: {
-                        url: string;
-                        title: string;
-                      }; */}
-                    {article.blocks &&
-                      article.blocks.map((block, index) => (
-                        <div
-                          key={block.id}
-                          className="grid sm:grid-cols-2 gap-4 my-8"
-                        >
+                    <button
+                      type="button"
+                      className="py-2 rounded-md bg-primary/35 cursor-pointer w-full"
+                      onClick={() => {
+                        setArticleBlocks((prev) => [
+                          ...prev,
+                          {
+                            id: crypto.randomUUID(),
+                            title: "",
+                            content: "",
+                            image: null,
+                            code: null,
+                          },
+                        ]);
+                      }}
+                    >
+                      اضافة بلوك جديد
+                    </button>
+                    {articleBlocks.map((block, index) => (
+                      <section key={block.id} className="my-8">
+                        <div className="flex justify-between gap-4">
+                          <button
+                            onClick={() =>
+                              moveBlock({ index, direction: "up" })
+                            }
+                            type="button"
+                          >
+                            up
+                          </button>
+                          <button
+                            onClick={() =>
+                              moveBlock({ index, direction: "down" })
+                            }
+                            type="button"
+                          >
+                            down
+                          </button>
+                        </div>
+                        <div className="grid sm:grid-cols-2 gap-4">
                           <Input
-                            name={`blocks[${index}].title`}
                             type="text"
-                            placeholder="عنوان البلوك"
-                            defaultValue={block.title ?? ""}
+                            placeholder="عنوان البلوك (اختياري)"
                             className="order-1"
+                            defaultValue={block.title ?? ""}
+                            onChange={(e) => {
+                              setArticleBlocks((prev) => {
+                                const newBlocks = [...prev];
+                                newBlocks[index] = {
+                                  ...newBlocks[index],
+                                  title: e.target.value,
+                                  content: newBlocks[index].content,
+                                  image: {
+                                    url: newBlocks[index].image?.url ?? "",
+                                    public_id:
+                                      newBlocks[index].image?.public_id ?? "",
+                                    alt: newBlocks[index].image?.alt ?? "",
+                                  },
+                                  code: {
+                                    language:
+                                      newBlocks[index].code?.language ?? "",
+                                    content:
+                                      newBlocks[index].code?.content ?? "",
+                                  },
+                                };
+                                return newBlocks;
+                              });
+                            }}
                           />
                           <Textarea
-                            name={`blocks[${index}].content`}
-                            placeholder="محتوى البلوك"
+                            placeholder="محتوى البلوك (اختياري)"
                             className="h-24 order-2 sm:order-3"
                             defaultValue={block.content ?? ""}
                           />
+                          {/*  */}
                           <Input
-                            name={`blocks[${index}].image-description`}
                             type="text"
                             placeholder="وصف الصورة (alt)"
                             defaultValue={block.image?.alt}
                             className={`order-3 sm:order-2 ${!block.image && "border-gray-600"}`}
                           />
                           <Input
-                            name={`blocks[${index}].image`}
                             type="file"
                             className={`order-4 ${!block.image && "border-gray-600"}`}
                           />
+                          {/*  */}
+                          <Input
+                            dir="ltr"
+                            type="text"
+                            className="order-5 col-span-2"
+                            placeholder="لغة الكود (اختياري)"
+                            defaultValue={block.code?.language ?? ""}
+                          />
+                          <Textarea
+                            dir="ltr"
+                            placeholder="كود البلوك (اختياري)"
+                            defaultValue={block.code?.content ?? ""}
+                            className="order-6 col-span-2 min-h-24 max-h-96"
+                          />
+                          {/*  */}
                         </div>
-                      ))}
+                      </section>
+                    ))}
                   </div>
                 </div>
                 <button

@@ -9,14 +9,10 @@ type CodeBlock = {
 };
 export type ArticleBlock = {
   id: string;
-  title: string | null;
+  title?: string | null;
   content?: string | null;
   code?: CodeBlock | null;
   image?: ImageType | null;
-  link: {
-    url: string;
-    title: string;
-  };
 };
 export type ArticleTY = {
   _id?: string;
