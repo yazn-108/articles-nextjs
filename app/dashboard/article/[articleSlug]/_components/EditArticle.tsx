@@ -5,6 +5,7 @@ import HandleUploadImage from "@/hooks/HandleUploadImage";
 import { ArticleBlock, ArticleTY } from "@/types/Articles";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
 import { Activity, useState } from "react";
 import { createPortal } from "react-dom";
 import { toast } from "sonner";
@@ -12,6 +13,7 @@ const EditArticle = ({ article }: { article: ArticleTY }) => {
   const queryClient = useQueryClient();
   const [IsOpen, setIsOpen] = useState<boolean>(false);
   const [newArticleLoader, setNewArticleLoader] = useState<boolean>(false);
+  const router = useRouter();
   const [deleteBlocksImageByIds, setDeleteBlocksImageByIds] = useState<
     string[]
   >([]);
@@ -169,6 +171,8 @@ const EditArticle = ({ article }: { article: ArticleTY }) => {
                 title: articleData.title,
               });
             }
+            router.prefetch(`/dashboard/article/${article.slug}`);
+            router.push(`/dashboard/article/${article.slug}`);
           },
         },
       );
@@ -237,7 +241,21 @@ const EditArticle = ({ article }: { article: ArticleTY }) => {
                     name="createdAt"
                     date={new Date(article.createdAt)}
                   />
-                  <Input name="banner" type="file" />
+                  <div className="flex max-sm:flex-col items-center gap-4">
+                    <Input name="banner" type="file" />
+                    <button
+                      type="button"
+                      className="bg-primary/20 rounded-md w-fit max-sm:w-full py-1 px-2 cursor-pointer flex-2/4"
+                      onClick={() => {
+                        const input = document.querySelector(
+                          `input[name="banner"]`,
+                        ) as HTMLInputElement | null;
+                        if (input) input.value = "";
+                      }}
+                    >
+                      ازالة الصورة المختارة
+                    </button>
+                  </div>
                   <Input
                     name="banner-description"
                     type="text"
@@ -284,6 +302,18 @@ const EditArticle = ({ article }: { article: ArticleTY }) => {
                                   (prevBlock) => prevBlock.id !== block.id,
                                 ),
                               );
+                              if (block.image?.public_id) {
+                                setDeleteBlocksImageByIds((prev) =>
+                                  prev.includes(
+                                    block.image?.public_id as string,
+                                  )
+                                    ? prev
+                                    : [
+                                        ...prev,
+                                        block.image?.public_id as string,
+                                      ],
+                                );
+                              }
                             }}
                             type="button"
                           >
