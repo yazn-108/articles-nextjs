@@ -1,3 +1,4 @@
+import BackupArticles from "@/hooks/BackupArticles";
 import IsAdmin from "@/hooks/IsAdmin";
 import cloudinary from "@/lib/cloudinary";
 import { getColl } from "@/lib/mongodb";
@@ -73,26 +74,29 @@ export async function PUT(request: NextRequest) {
   }
   try {
     const { updatedArticle, deleteBlocksImageByIds }: { updatedArticle: ArticleTY; deleteBlocksImageByIds?: string[] } = await request.json()
-    // const blocks = (updatedArticle.blocks || []).map((block: ArticleBlock) => ({
-    //   ...block,
-    //   id: block.id ?? new ObjectId(),
-    // }))
     const { _id, ...safeArticle } = updatedArticle;
-    const ArticleWithBlocks = {
+    const coll = await getColl({ dbName: "articles-database", collectionName: "articles-list" });
+    const updatedArticleData = {
       ...safeArticle,
       createdAt: new Date(updatedArticle.createdAt),
-      // blocks
     }
-    const coll = await getColl({ dbName: "articles-database", collectionName: "articles-list" });
     await coll.updateOne({ _id: new ObjectId(_id) },
-      { $set: ArticleWithBlocks });
+      {
+        $set: updatedArticleData
+      });
     if (deleteBlocksImageByIds && deleteBlocksImageByIds.length > 0) {
-      await cloudinary.api.delete_resources(deleteBlocksImageByIds)
+      await cloudinary.api.delete_resources(deleteBlocksImageByIds);
     }
-    return NextResponse.json(updatedArticle);
+    await BackupArticles({
+      event_type: "article.updated", client_payload: {
+        _id,
+        ...updatedArticleData
+      }
+    });
+    return NextResponse.json({ message: "تم حفظ التعديلات" });
   } catch (error) {
     console.error("Article API Error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "لم يتم حفظ التعديلات" }, { status: 500 });
   }
 }
 export async function DELETE(request: NextRequest) {
@@ -105,9 +109,9 @@ export async function DELETE(request: NextRequest) {
     const coll = await getColl({ dbName: "articles-database", collectionName: "articles-list" });
     await coll.deleteOne({ _id: new ObjectId(_id) });
     await cloudinary.api.delete_resources(public_ids_of_images)
-    // await BackupArticles({
-    //   event_type: "article.deleted", client_payload: { articleId: _id }
-    // });
+    await BackupArticles({
+      event_type: "article.deleted", client_payload: { articleId: _id }
+    });
     return NextResponse.json({ message: "Article and associated images deleted successfully" });
   } catch (error) {
     console.error("Article API Error:", error);

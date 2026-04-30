@@ -1,3 +1,4 @@
+import BackupArticles from "@/hooks/BackupArticles";
 import IsAdmin from "@/hooks/IsAdmin";
 import { getColl } from "@/lib/mongodb";
 import { ArticleTY } from "@/types/Articles";
@@ -77,12 +78,12 @@ export async function POST(req: NextRequest) {
       SubscribersNotified
     }
     const result = await coll.insertOne(article);
-    // await BackupArticles({
-    //   event_type: "article.created", client_payload: {
-    //     _id: result.insertedId.toString(),
-    //     ...article
-    //   }
-    // });
+    await BackupArticles({
+      event_type: "article.created", client_payload: {
+        _id: result.insertedId.toString(),
+        ...article
+      }
+    });
     return NextResponse.json(
       { message: "تمت إضافة المقالة بنجاح" },
       { status: 201 }

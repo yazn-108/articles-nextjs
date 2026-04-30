@@ -55,6 +55,7 @@ const CreateArticle = () => {
         public_id: image!.public_id,
         alt: data["banner-description"] as string,
       },
+      blocks: [],
     };
     CreateNewArticle.mutate(articleData);
   };
