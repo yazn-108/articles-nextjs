@@ -214,11 +214,6 @@ const PresentationalArticleDetails = ({ article }: { article: ArticleTY }) => {
                     </div>
                   </div>
                 )}
-                {block.link && (
-                  <Link target="_blank" href={block.link.url}>
-                    {block.link.title}
-                  </Link>
-                )}
               </div>
               {block.image && <BlockImage image={block.image} />}
             </div>
