@@ -1,14 +1,14 @@
+import { TanStackProvider } from "@/hooks/TanStackProvider";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Playpen_Sans_Arabic } from "next/font/google";
-import "./globals.css";
-import { TanStackProvider } from "@/hooks/TanStackProvider";
 import Image from "next/image";
 import Link from "next/link";
-import FooterForms from "./_components/FooterForms";
-import Search from "./_components/Search/page";
-import ScrollToEmail from "./_components/ScrollToEmail";
 import Script from "next/script";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import FooterForms from "./_components/FooterForms";
+import ScrollToEmail from "./_components/ScrollToEmail";
+import Search from "./_components/Search/page";
+import "./globals.css";
 const Playpen = Playpen_Sans_Arabic({
   variable: "--font-Playpen_Sans_Arabic",
   subsets: ["arabic"],
@@ -126,6 +126,14 @@ export default function RootLayout({
                   href="/terms-of-use"
                 >
                   شروط الاستخدام
+                </Link>
+                <Link
+                  className="text-primary hover:text-[#344157] transition-all"
+                  href="/rss.xml"
+                  dir="rtl"
+                  target="_blank"
+                >
+                  صفحة RSS
                 </Link>
               </div>
               <p dir="rtl" className="text-center text-foreground font-medium">
