@@ -28,6 +28,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
+      url: `https://yazn-108.github.io/murakkaz-articles-platform/`,
+      lastModified: new Date('2025-01-01'),
+      changeFrequency: 'daily',
+      priority: 1,
+    },
+    {
       url: `${BASE_URL}/about-yazn-108`,
       lastModified: new Date('2025-01-01'),
       changeFrequency: 'monthly',
