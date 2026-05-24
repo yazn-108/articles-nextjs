@@ -1,6 +1,6 @@
 import { getColl } from '@/lib/mongodb';
 import type { MetadataRoute } from 'next';
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://murakkaz.vercel.app';
+const BASE_URL = process.env.url || 'https://murakkaz.vercel.app';
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const coll = await getColl({
     dbName: "articles-database",
