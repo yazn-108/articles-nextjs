@@ -32,18 +32,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
   return {
     metadataBase: new URL(process.env.url!),
-    title: `مُركَّز | ${article.title}`,
+    title: `${article.title} | مُركَّز`,
     description: article.description,
     alternates: {
       canonical: `/article/${articleSlug}`,
     },
     openGraph: {
       type: "article",
-      title: `مُركَّز | ${article.title}`,
+      title: `${article.title} | مُركَّز`,
       description: article.description,
       locale: "ar",
       url: `/article/${articleSlug}`,
-      siteName: "مُركَّز",
+      siteName: "مُركَّز",
       images: [
         {
           url: "/default-og-image.jpg",
@@ -55,7 +55,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: `مُركَّز | ${article.title}`,
+      title: `${article.title} | مُركَّز`,
       description: article.description,
       creator: "@yazn_108",
       images: [
@@ -83,7 +83,7 @@ const Page = async ({ params }: Props) => {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "BlogPosting",
-            headline: `مُركَّز | ${article.title}`,
+            headline: `${article.title} | مُركَّز`,
             description: article.description,
             url: `https://murakkaz.vercel.app/article/${article.slug}`,
             image: {
