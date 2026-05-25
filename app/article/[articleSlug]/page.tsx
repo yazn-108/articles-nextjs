@@ -1,6 +1,7 @@
 import { ArticleTY } from "@/types/Articles";
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
+import Script from "next/script";
 import ArticleNotFound from "./_components/ArticleNotFound";
 import Skeleton from "./_components/Skeleton";
 const PresentationalArticleDetails = dynamic(
@@ -72,6 +73,61 @@ const Page = async ({ params }: Props) => {
   const { articleSlug } = await params;
   const article = await getArticle(articleSlug);
   if (!article) return <ArticleNotFound />;
-  return <PresentationalArticleDetails article={article} />;
+  return (
+    <>
+      <PresentationalArticleDetails article={article} />
+      <Script
+        id="article-json-ld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            headline: article.title,
+            description: article.description,
+            url: `https://murakkaz.vercel.app/article/${article.slug}`,
+            image: {
+              "@type": "ImageObject",
+              url: article.banner.url || "/default-og-image.jpg",
+              width: 1200,
+              height: 630,
+            },
+            author: {
+              "@type": "Person",
+              name: "yazn_108",
+              url: "https://yazn-108.github.io/",
+              sameAs: [
+                "https://x.com/yazn_108",
+                "https://github.com/yazn-108",
+                "https://www.linkedin.com/in/yazn-ahmed",
+              ],
+            },
+            publisher: {
+              "@type": "Organization",
+              name: "مُركَّز",
+              url: "https://murakkaz.vercel.app/",
+              logo: {
+                "@type": "ImageObject",
+                url: "https://murakkaz.vercel.app/favicon.png",
+                width: 512,
+                height: 512,
+              },
+              sameAs: [
+                "https://x.com/yazn_108",
+                "https://github.com/yazn-108",
+                "https://www.linkedin.com/in/yazn-ahmed",
+              ],
+            },
+            datePublished: article.createdAt,
+            dateModified: article.createdAt,
+            mainEntityOfPage: {
+              "@type": "WebPage",
+              "@id": `https://murakkaz.vercel.app/article/${article.slug}`,
+            },
+          }),
+        }}
+      />
+    </>
+  );
 };
 export default Page;
