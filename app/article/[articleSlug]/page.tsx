@@ -31,21 +31,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
   return {
     metadataBase: new URL(process.env.url!),
-    title: article.title,
+    title: `${article.title} | مُركَّز`,
     description: article.description,
     alternates: {
       canonical: `/article/${articleSlug}`,
     },
     openGraph: {
       type: "article",
-      title: article.title,
+      title: `${article.title} | مُركَّز`,
       description: article.description,
       locale: "ar",
       url: `/article/${articleSlug}`,
       siteName: "مُركَّز",
       images: [
         {
-          url: article.banner.url || "/default-og-image.jpg",
+          url: "/default-og-image.jpg",
           alt: article.banner.alt,
           width: 1200,
           height: 630,
@@ -54,12 +54,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: article.title,
+      title: `${article.title} | مُركَّز`,
       description: article.description,
       creator: "@yazn_108",
       images: [
         {
-          url: article.banner.url || "/default-og-image.jpg",
+          url: "/default-og-image.jpg",
           alt: article.banner.alt,
           width: 1200,
           height: 630,
